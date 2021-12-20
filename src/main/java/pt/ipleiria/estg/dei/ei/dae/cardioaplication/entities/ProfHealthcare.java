@@ -8,24 +8,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "HeathcareProfessional")
 @NamedQueries({
         @NamedQuery(
                 name = "getAllHealthcares",
                 query = "SELECT h FROM ProfHealthcare h ORDER BY h.name"
         )
 })
-public class ProfHealthcare implements Serializable {
-    @Id
-    private String username;
-    @NotNull
-    private String password;
-    @NotNull
-    private String name;
-    @Email
-    @NotNull
-    private String email;
-    @OneToMany(mappedBy = "profHealthcare", cascade = CascadeType.REMOVE)
+public class ProfHealthcare extends User implements Serializable {
+    @ManyToMany
+    @JoinTable(name = "PROFHEALTHCARE_PATIENTS",
+            joinColumns = @JoinColumn(name = "PROFHEALTHCARE_USERNAME", referencedColumnName = "USERNAME"),
+            inverseJoinColumns = @JoinColumn(name = "PATIENT_USERNAME", referencedColumnName = "USERNAME"))
     private List<PatientUser> patientUserList;
 
     public ProfHealthcare() {
@@ -33,45 +26,9 @@ public class ProfHealthcare implements Serializable {
     }
 
     public ProfHealthcare(String username, String password, String nome, String email) {
-        this.username = username;
-        this.password = password;
-        this.name = nome;
-        this.email = email;
+        super(username, password, nome, email);
         patientUserList = new ArrayList<>();
     }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public List<PatientUser> getPatientUserList() {
         return patientUserList;
     }

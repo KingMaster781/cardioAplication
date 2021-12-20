@@ -1,0 +1,51 @@
+GET http://localhost:8080/cardioAplication/api/admin/
+Accept: application/json
+#####
+PUT http://localhost:8080/cardioAplication/api/admin/admin1
+Content-Type: application/json
+
+{ "email" : "admin1@gmail.com",
+"name": "Alfredo",
+"password": "56"
+}
+#####
+POST http://localhost:8080/cardioAplication/api/admin/
+Content-Type: application/json
+
+{ "username" : "admin3",
+"email" : "admin3@gmail.com",
+"name": "Alfredo Joaquim",
+"password": "70"
+}
+#####
+GET http://localhost:8080/cardioAplication/api/profhealthcares/federico.santos/patients
+Accept: application/json
+#####
+GET http://localhost:8080/cardioAplication/api/patientusers
+Accept: application/json
+#####
+GET http://localhost:8080/cardioAplication/api/typeofdata
+Accept: application/json
+#####
+GET http://localhost:8080/cardioAplication/api/patientusers/rafaela123
+Accept: application/json
+#####
+GET http://localhost:8080/cardioAplication/api/patientusers/rafaela123/profHealthcares
+Accept: application/json
+#####
+GET http://localhost:8080/cardioAplication/api/profhealthcares/federico.santos/
+Accept: application/json
+#####
+POST http://localhost:8080/cardioAplication/api/auth/login
+Content-Type: application/json
+
+{"username": "admin1",
+  "password": "123"
+}
+#####
+POST http://localhost:8080/cardioAplication/api/auth/login
+Content-Type: application/json
+
+{"username": "xavier123",
+  "password": "123"
+}

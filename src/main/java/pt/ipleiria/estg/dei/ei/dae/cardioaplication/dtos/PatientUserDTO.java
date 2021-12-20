@@ -1,12 +1,17 @@
 package pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PatientUserDTO {
     private String username;
     private String password;
     private String name;
     private String email;
+    private List<ProfHealthcareDTO> profHealthcareDTOList;
 
     public PatientUserDTO() {
+        profHealthcareDTOList = new ArrayList<>();
     }
 
     public PatientUserDTO(String username, String password, String name, String email) {
@@ -14,6 +19,15 @@ public class PatientUserDTO {
         this.password = password;
         this.name = name;
         this.email = email;
+        profHealthcareDTOList = new ArrayList<>();
+    }
+
+    public List<ProfHealthcareDTO> getProfHealthcareDTOList() {
+        return profHealthcareDTOList;
+    }
+
+    public void setProfHealthcareDTOList(List<ProfHealthcareDTO> profHealthcareDTOList) {
+        this.profHealthcareDTOList = profHealthcareDTOList;
     }
 
     public String getUsername() {

@@ -1,12 +1,18 @@
 package pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos;
 
-public class ProfHealthcareDTO {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ProfHealthcareDTO implements Serializable {
     private String username;
     private String password;
     private String name;
     private String email;
+    private List<PatientUserDTO> patients;
 
     public ProfHealthcareDTO() {
+        patients = new ArrayList<>();
     }
 
     public ProfHealthcareDTO(String username, String password, String name, String email) {
@@ -14,6 +20,15 @@ public class ProfHealthcareDTO {
         this.password = password;
         this.name = name;
         this.email = email;
+        patients = new ArrayList<>();
+    }
+
+    public List<PatientUserDTO> getPatients() {
+        return patients;
+    }
+
+    public void setPatients(List<PatientUserDTO> patients) {
+        this.patients = patients;
     }
 
     public String getUsername() {

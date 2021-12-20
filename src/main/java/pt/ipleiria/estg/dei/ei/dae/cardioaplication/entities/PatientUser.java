@@ -8,26 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "patientuser")
 @NamedQueries({
         @NamedQuery(
                 name = "getAllPatients",
                 query = "SELECT p FROM PatientUser p ORDER BY p.name"
         )
 })
-public class PatientUser implements Serializable {
-    @Id
-    private String username;
-    @NotNull
-    private String password;
-    @NotNull
-    private String name;
-    @Email
-    @NotNull
-    private String email;
-    @ManyToOne
-    @JoinColumn(name = "HeathcareProfessional_USERNAME")
-    private ProfHealthcare profHealthcare;
+public class PatientUser extends User implements Serializable {
+    @ManyToMany(mappedBy = "patientUserList")
+    private List<ProfHealthcare> profHealthcares;
     @OneToMany(mappedBy = "patientUser", cascade = CascadeType.REMOVE)
     private List<Data> dataList;
     @OneToMany(mappedBy = "patientUser", cascade = CascadeType.REMOVE)
@@ -36,55 +25,22 @@ public class PatientUser implements Serializable {
     public PatientUser() {
         dataList = new ArrayList<>();
         examList = new ArrayList<>();
+        profHealthcares = new ArrayList<>();
     }
 
     public PatientUser(String username, String password, String name, String email) {
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.email = email;
+        super(username, password, name, email);
         dataList = new ArrayList<>();
         examList = new ArrayList<>();
+        profHealthcares = new ArrayList<>();
     }
 
-    public String getUsername() {
-        return username;
+    public List<ProfHealthcare> getProfHealthcare() {
+        return profHealthcares;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public ProfHealthcare getProfHealthcare() {
-        return profHealthcare;
-    }
-
-    public void setProfHealthcare(ProfHealthcare profHealthcare) {
-        this.profHealthcare = profHealthcare;
+    public void setProfHealthcare(List<ProfHealthcare> profHealthcare) {
+        this.profHealthcares = profHealthcare;
     }
 
     public List<Data> getDataList() {
@@ -132,6 +88,22 @@ public class PatientUser implements Serializable {
         if (exam != null && !examList.contains(exam))
         {
             examList.add(exam);
+        }
+    }
+
+    public void addProfHealthcare(ProfHealthcare profHealthcare)
+    {
+        if (profHealthcare != null && !profHealthcares.contains(profHealthcare))
+        {
+            profHealthcares.add(profHealthcare);
+        }
+    }
+
+    public void removeProfHealthcare(ProfHealthcare profHealthcare)
+    {
+        if (profHealthcare != null && profHealthcares.contains(profHealthcare))
+        {
+            profHealthcares.remove(profHealthcare);
         }
     }
 }

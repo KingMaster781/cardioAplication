@@ -3,13 +3,14 @@ package pt.ipleiria.estg.dei.ei.dae.cardioaplication.ws;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.AdminDTO;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.AdminBean;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.Admin;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyConstraintViolationException;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityExistsException;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityNotFoundException;
 
 import javax.ejb.EJB;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,4 +40,45 @@ public class AdminService {
         return admins.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    @GET
+    @Path("{username}")
+    public Response getAdminDetail(@PathParam("username") String username)
+    {
+        Admin admin = adminBean.findAdmin(username);
+        if(admin != null)
+        {
+            return Response.ok(toDTO(admin)).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).entity("ERROR_FINDING_ADMIN").build();
+    }
+
+    @POST
+    @Path("/")
+    public Response create (AdminDTO adminDTO) throws MyConstraintViolationException, MyEntityExistsException {
+        adminBean.create(adminDTO.getUsername(), adminDTO.getPassword(), adminDTO.getName(), adminDTO.getEmail());
+        return Response.status(Response.Status.OK).build();
+    }
+
+    @PUT
+    @Path("{username}")
+    public Response update (@PathParam("username") String username, AdminDTO adminDTO) throws MyConstraintViolationException, MyEntityNotFoundException {
+        adminBean.update(username, adminDTO.getPassword(),adminDTO.getName(),adminDTO.getEmail());
+        return Response.status(Response.Status.OK).build();
+    }
+
+    @DELETE
+    @Path("{username}")
+    public Response remove (@PathParam("username") String username) throws MyEntityNotFoundException {
+        adminBean.remove(username);
+        return Response.status(Response.Status.OK).build();
+    }
+
+    @GET
+    @Path("/{username}")
+    public Response consult (@PathParam("username") String username){
+        Admin admin = adminBean.findAdmin(username);
+        if(admin==null)
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        return Response.status(Response.Status.OK).entity(toDTO(admin)).build();
+    }
 }
