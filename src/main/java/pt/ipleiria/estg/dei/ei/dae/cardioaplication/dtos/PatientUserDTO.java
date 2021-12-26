@@ -9,9 +9,11 @@ public class PatientUserDTO {
     private String name;
     private String email;
     private List<ProfHealthcareDTO> profHealthcareDTOList;
+    private List<PrescriptionDTO> prescriptionDTOList;
 
     public PatientUserDTO() {
         profHealthcareDTOList = new ArrayList<>();
+        prescriptionDTOList = new ArrayList<>();
     }
 
     public PatientUserDTO(String username, String password, String name, String email) {
@@ -20,6 +22,7 @@ public class PatientUserDTO {
         this.name = name;
         this.email = email;
         profHealthcareDTOList = new ArrayList<>();
+        prescriptionDTOList = new ArrayList<>();
     }
 
     public List<ProfHealthcareDTO> getProfHealthcareDTOList() {
@@ -28,6 +31,14 @@ public class PatientUserDTO {
 
     public void setProfHealthcareDTOList(List<ProfHealthcareDTO> profHealthcareDTOList) {
         this.profHealthcareDTOList = profHealthcareDTOList;
+    }
+
+    public List<PrescriptionDTO> getPrescriptionDTOList() {
+        return prescriptionDTOList;
+    }
+
+    public void setPrescriptionDTOList(List<PrescriptionDTO> prescriptionDTOList) {
+        this.prescriptionDTOList = prescriptionDTOList;
     }
 
     public String getUsername() {

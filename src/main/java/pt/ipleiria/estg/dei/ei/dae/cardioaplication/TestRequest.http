@@ -49,3 +49,29 @@ Content-Type: application/json
 {"username": "xavier123",
   "password": "123"
 }
+
+#####
+POST http://localhost:8080/cardioAplication/api/pescription
+Content-Type: application/json
+
+{"code": "2",
+  "duracao": "30",
+  "insertionDate": "23/12/2021",
+  "programCode": "1",
+  "patientUser_username": "rafaela123"
+}
+#####
+GET http://localhost:8080/cardioAplication/api/program/
+Accept: application/json
+#####
+GET http://localhost:8080/cardioAplication/api/exercise
+Accept: application/json
+#####
+GET http://localhost:8080/cardioAplication/api/patientusers/rafaela123/profHealthcares/federico.santos
+Accept: application/json
+#####
+GET http://localhost:8080/cardioAplication/api/patientusers/rafaela123/prescription/1
+Accept: application/json
+#####
+GET http://localhost:8080/cardioAplication/api/prescription/
+Accept: application/json

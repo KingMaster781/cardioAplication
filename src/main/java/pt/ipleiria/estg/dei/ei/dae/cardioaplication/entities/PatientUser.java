@@ -21,11 +21,14 @@ public class PatientUser extends User implements Serializable {
     private List<Data> dataList;
     @OneToMany(mappedBy = "patientUser", cascade = CascadeType.REMOVE)
     private List<Exam> examList;
+    @OneToMany(mappedBy = "patientUser", cascade = CascadeType.REMOVE)
+    private List<Prescription> prescriptions;
 
     public PatientUser() {
         dataList = new ArrayList<>();
         examList = new ArrayList<>();
         profHealthcares = new ArrayList<>();
+        prescriptions = new ArrayList<>();
     }
 
     public PatientUser(String username, String password, String name, String email) {
@@ -33,6 +36,7 @@ public class PatientUser extends User implements Serializable {
         dataList = new ArrayList<>();
         examList = new ArrayList<>();
         profHealthcares = new ArrayList<>();
+        prescriptions = new ArrayList<>();
     }
 
     public List<ProfHealthcare> getProfHealthcare() {
@@ -57,6 +61,14 @@ public class PatientUser extends User implements Serializable {
 
     public void setExamList(List<Exam> examList) {
         this.examList = examList;
+    }
+
+    public List<Prescription> getPrescriptions() {
+        return prescriptions;
+    }
+
+    public void setPrescriptions(List<Prescription> prescriptions) {
+        this.prescriptions = prescriptions;
     }
 
     public void addData(Data data)
@@ -104,6 +116,22 @@ public class PatientUser extends User implements Serializable {
         if (profHealthcare != null && profHealthcares.contains(profHealthcare))
         {
             profHealthcares.remove(profHealthcare);
+        }
+    }
+
+    public void addPrescription(Prescription prescription)
+    {
+        if (prescription != null && !prescriptions.contains(prescription))
+        {
+            prescriptions.add(prescription);
+        }
+    }
+
+    public void removePrescription(Prescription prescription)
+    {
+        if (prescription != null && prescriptions.contains(prescription))
+        {
+            prescriptions.remove(prescription);
         }
     }
 }
