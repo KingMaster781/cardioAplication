@@ -1,25 +1,19 @@
 package pt.ipleiria.estg.dei.ei.dae.cardioaplication.ws;
 
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.AdminDTO;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.PatientUserDTO;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.PrescriptionDTO;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.ProfHealthcareDTO;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.*;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.PatientUserBean;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.PrescriptionBean;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.Admin;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.PatientUser;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.Prescription;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.ProfHealthcare;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.PrescriptionExerciseBean;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.PrescriptionMedicBean;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.PrescriptionNutriBean;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.*;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityNotFoundException;
 
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -32,7 +26,11 @@ public class PatientUserService {
     @EJB
     private PatientUserBean patientUserBean;
     @EJB
-    private PrescriptionBean prescriptionBean;
+    private PrescriptionExerciseBean prescriptionExerciseBean;
+    @EJB
+    private PrescriptionMedicBean prescriptionMedicBean;
+    @EJB
+    private PrescriptionNutriBean prescriptionNutriBean;
 
     @GET
     @Path("/")
@@ -48,7 +46,9 @@ public class PatientUserService {
                 patientUser.getName(),
                 patientUser.getEmail()
         );
-        patientUserDTO.setPrescriptionDTOList(prescriptiontoDTOs(patientUser.getPrescriptions()));
+        patientUserDTO.setPrescriptionExerciseDTOList(prescriptionExerciseDTOS(patientUser.getPrescriptionExercises()));
+        patientUserDTO.setPrescriptionMedicDTOList(prescriptionMedicDTOS(patientUser.getPrescriptionMedics()));
+        patientUserDTO.setPrescriptionNutriDTOList(prescriptionNutriDTOS(patientUser.getPrescriptionNutris()));
         return patientUserDTO;
     }
 
@@ -64,7 +64,9 @@ public class PatientUserService {
                 patientUser.getEmail()
         );
         patientUserDTO.setProfHealthcareDTOList(profHealthcaretoDTOs(patientUser.getProfHealthcare()));
-        patientUserDTO.setPrescriptionDTOList(prescriptiontoDTOs(patientUser.getPrescriptions()));
+        patientUserDTO.setPrescriptionExerciseDTOList(prescriptionExerciseDTOS(patientUser.getPrescriptionExercises()));
+        patientUserDTO.setPrescriptionMedicDTOList(prescriptionMedicDTOS(patientUser.getPrescriptionMedics()));
+        patientUserDTO.setPrescriptionNutriDTOList(prescriptionNutriDTOS(patientUser.getPrescriptionNutris()));
         return patientUserDTO;
     }
 
@@ -85,7 +87,7 @@ public class PatientUserService {
         return profHealthcares.stream().map(this::profHealthcaretoDTO).collect(Collectors.toList());
     }
 
-    private PrescriptionDTO prescriptionDTO(Prescription prescription) {
+    private PrescriptionExerciseDTO prescriptionExerciseDTO(PrescriptionExercise prescription) {
         String vigor;
         if (prescription.isVigor()) {
             vigor = "Está em vigor";
@@ -93,7 +95,7 @@ public class PatientUserService {
             vigor = "Não está em vigor";
         }
 
-        return new PrescriptionDTO(
+        return new PrescriptionExerciseDTO(
                 prescription.getCode(),
                 prescription.getDuracao(),
                 convertDatetoString(prescription.getInsertionDate()),
@@ -103,8 +105,67 @@ public class PatientUserService {
         );
     }
 
-    private List<PrescriptionDTO> prescriptiontoDTOs(List<Prescription> prescriptions) {
-        return prescriptions.stream().map(this::prescriptionDTO).collect(Collectors.toList());
+    private List<PrescriptionExerciseDTO> prescriptionExerciseDTOS(List<PrescriptionExercise> prescriptions) {
+        return prescriptions.stream().map(this::prescriptionExerciseDTO).collect(Collectors.toList());
+    }
+
+    private PrescriptionMedicDTO prescriptionMedicineDTO(PrescriptionMedic prescription) {
+        String vigor;
+        if (prescription.isVigor()) {
+            vigor = "Está em vigor";
+        } else {
+            vigor = "Não está em vigor";
+        }
+
+        PrescriptionMedicDTO prescriptionMedicDTO = new PrescriptionMedicDTO(
+                prescription.getCode(),
+                prescription.getDuracao(),
+                convertDatetoString(prescription.getInsertionDate()),
+                vigor,
+                prescription.getPatientUser().getUsername()
+        );
+
+        prescriptionMedicDTO.setMedicineDTOList(medicineDTOS(prescription.getMedicines()));
+        return prescriptionMedicDTO;
+    }
+
+    private List<PrescriptionMedicDTO> prescriptionMedicDTOS(List<PrescriptionMedic> prescriptions) {
+        return prescriptions.stream().map(this::prescriptionMedicineDTO).collect(Collectors.toList());
+    }
+
+    private PrescriptionNutriDTO prescriptionNutriDTO(PrescriptionNutri prescription) {
+        String vigor;
+        if (prescription.isVigor()) {
+            vigor = "Está em vigor";
+        } else {
+            vigor = "Não está em vigor";
+        }
+
+        return new PrescriptionNutriDTO(
+                prescription.getCode(),
+                prescription.getDuracao(),
+                convertDatetoString(prescription.getInsertionDate()),
+                vigor,
+                prescription.getPatientUser().getUsername(),
+                prescription.getDescNutri()
+        );
+    }
+
+    private List<PrescriptionNutriDTO> prescriptionNutriDTOS(List<PrescriptionNutri> prescriptions) {
+        return prescriptions.stream().map(this::prescriptionNutriDTO).collect(Collectors.toList());
+    }
+
+    private MedicineDTO medicineDTO(Medicine medicine) {
+        return new MedicineDTO(
+                medicine.getCode(),
+                medicine.getName(),
+                medicine.getDescription(),
+                medicine.getWarning()
+        );
+    }
+
+    private List<MedicineDTO> medicineDTOS(List<Medicine> medicines) {
+        return medicines.stream().map(this::medicineDTO).collect(Collectors.toList());
     }
 
     private String convertDatetoString(Date data)
@@ -137,13 +198,39 @@ public class PatientUserService {
     }
 
     @GET
-    @Path("{username}/prescription")
+    @Path("{username}/prescription-exercises")
     //@RolesAllowed({"Admin, PatientUser"})
-    public Response getPatientPrescription(@PathParam("username") String username) {
+    public Response getPatientPrescriptionExercises(@PathParam("username") String username) {
         PatientUser patientUser = patientUserBean.findPatient(username);
         if(patientUser!=null)
         {
-            List<PrescriptionDTO> dtos = prescriptiontoDTOs(patientUser.getPrescriptions());
+            List<PrescriptionExerciseDTO> dtos = prescriptionExerciseDTOS(patientUser.getPrescriptionExercises());
+            return Response.ok(dtos).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).entity("ERROR_FINDING_PATIENT").build();
+    }
+
+    @GET
+    @Path("{username}/prescription-medics")
+    //@RolesAllowed({"Admin, PatientUser"})
+    public Response getPatientPrescriptionMedics(@PathParam("username") String username) {
+        PatientUser patientUser = patientUserBean.findPatient(username);
+        if(patientUser!=null)
+        {
+            List<PrescriptionMedicDTO> dtos = prescriptionMedicDTOS(patientUser.getPrescriptionMedics());
+            return Response.ok(dtos).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).entity("ERROR_FINDING_PATIENT").build();
+    }
+
+    @GET
+    @Path("{username}/prescription-nutris")
+    //@RolesAllowed({"Admin, PatientUser"})
+    public Response getPatientPrescriptionNutris(@PathParam("username") String username) {
+        PatientUser patientUser = patientUserBean.findPatient(username);
+        if(patientUser!=null)
+        {
+            List<PrescriptionNutriDTO> dtos = prescriptionNutriDTOS(patientUser.getPrescriptionNutris());
             return Response.ok(dtos).build();
         }
         return Response.status(Response.Status.NOT_FOUND).entity("ERROR_FINDING_PATIENT").build();
@@ -183,12 +270,34 @@ public class PatientUserService {
     }
 
     @GET
-    @Path("{username}/prescription/{code}")
-    public Response consult(@PathParam("username") String username,@PathParam("code") int code) {
-        List<Prescription> prescription = prescriptionBean.getAllPatientPrescriptionsCode(username, code);
-        if (prescription.size()>0)
+    @Path("{username}/prescription-exercises/{code}")
+    public Response consultPrescriptionsExercises(@PathParam("username") String username,@PathParam("code") int code) {
+        List<PrescriptionExercise> prescriptionExercises = prescriptionExerciseBean.getAllPatientPrescriptionsExercisesCode(username, code);
+        if (prescriptionExercises.size()>0)
         {
-            return Response.ok(prescriptiontoDTOs(prescription)).build();
+            return Response.ok(prescriptionExerciseDTOS(prescriptionExercises)).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).entity("Não possui nenhuma prescrição com esse código").build();
+    }
+
+    @GET
+    @Path("{username}/prescription-medics/{code}")
+    public Response consultPrescriptionsMedic(@PathParam("username") String username,@PathParam("code") int code) {
+        List<PrescriptionMedic> prescriptionMedics = prescriptionMedicBean.getAllPatientMedicPrescriptionsCode(username, code);
+        if (prescriptionMedics.size()>0)
+        {
+            return Response.ok(prescriptionMedicDTOS(prescriptionMedics)).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).entity("Não possui nenhuma prescrição com esse código").build();
+    }
+
+    @GET
+    @Path("{username}/prescription-nutris/{code}")
+    public Response consultPrescriptionsNutri(@PathParam("username") String username,@PathParam("code") int code) {
+        List<PrescriptionNutri> prescriptionNutris = prescriptionNutriBean.getAllPatientNutriPrescriptionsCode(username, code);
+        if (prescriptionNutris.size()>0)
+        {
+            return Response.ok(prescriptionNutriDTOS(prescriptionNutris)).build();
         }
         return Response.status(Response.Status.NOT_FOUND).entity("Não possui nenhuma prescrição com esse código").build();
     }

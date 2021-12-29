@@ -1,5 +1,8 @@
 package pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs;
 
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.PrescriptionMedic;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.PrescriptionNutri;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -19,9 +22,15 @@ public class ConfigBean {
     @EJB
     ProgramBean programBean;
     @EJB
-    PrescriptionBean prescriptionBean;
+    PrescriptionExerciseBean prescriptionExerciseBean;
+    @EJB
+    PrescriptionNutriBean prescriptionNutriBean;
+    @EJB
+    PrescriptionMedicBean prescriptionMedicBean;
     @EJB
     ExerciseBean exerciseBean;
+    @EJB
+    MedicineBean medicineBean;
     private static final Logger logger = Logger.getLogger("ejbs.ConfigBean");
 
     @PostConstruct
@@ -36,8 +45,12 @@ public class ConfigBean {
             exerciseBean.create(1, "agachamentos", "realizar 30 agachamento em 30 min");
             exerciseBean.create(2, "flexões", "realizar 30 flexões em 30 min");
             programBean.create(1, "RPC1", "Para doentes que tenham apenas um acompanhamento ligeiro");
+            medicineBean.create(1, "Brufen", "Para acalmar as dores gerais", "Não dar a asmáticos");
             programBean.enrollExercise(1,1);
-            prescriptionBean.create(1, 30, "23/12/2021", "rafaela123", 1);
+            prescriptionExerciseBean.create(1, 30, "23/12/2021", "rafaela123", 1);
+            prescriptionNutriBean.create(2, 30, "29/12/2021", "joaquim123", "comer mais legumes");
+            prescriptionMedicBean.create(3, 30, "29/12/2021", "joaquim123");
+            prescriptionMedicBean.enrollMedicine(1, 1);
         }
         catch (Exception e)
         {

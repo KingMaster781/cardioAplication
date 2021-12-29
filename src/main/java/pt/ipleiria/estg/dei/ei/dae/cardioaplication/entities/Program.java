@@ -3,6 +3,7 @@ package pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities;
 import io.smallrye.common.constraint.NotNull;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
                 query = "SELECT p FROM Program p ORDER BY p.name"
         )
 })
-public class Program {
+public class Program implements Serializable {
     @Id
     private int code;
     @NotNull
@@ -28,7 +29,7 @@ public class Program {
     private List<Exercise> exercises;
 
     @OneToMany(mappedBy = "program", cascade = CascadeType.REMOVE)
-    private List<Prescription> prescriptions;
+    private List<PrescriptionExercise> prescriptions;
 
     public Program() {
         exercises = new ArrayList<>();
@@ -75,11 +76,11 @@ public class Program {
         this.exercises = exercises;
     }
 
-    public List<Prescription> getPrescriptions() {
+    public List<PrescriptionExercise> getPrescriptions() {
         return prescriptions;
     }
 
-    public void setPrescriptions(List<Prescription> prescriptions) {
+    public void setPrescriptions(List<PrescriptionExercise> prescriptions) {
         this.prescriptions = prescriptions;
     }
 
@@ -99,7 +100,7 @@ public class Program {
         }
     }
 
-    public void addPrescription(Prescription prescription)
+    public void addPrescription(PrescriptionExercise prescription)
     {
         if(prescription != null && !prescriptions.contains(prescription))
         {
@@ -107,7 +108,7 @@ public class Program {
         }
     }
 
-    public void removePrescription(Prescription prescription)
+    public void removePrescription(PrescriptionExercise prescription)
     {
         if(prescription != null && prescriptions.contains(prescription))
         {

@@ -1,8 +1,6 @@
 package pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs;
 
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.Exercise;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.Prescription;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.Program;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.*;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityNotFoundException;
@@ -71,10 +69,10 @@ public class ProgramBean {
         for (Exercise exercise : program.getExercises()) {
             exercise.removeProgram(program);
         }
-        for (Prescription prescription : program.getPrescriptions())
+        for (PrescriptionExercise prescriptionExercise : program.getPrescriptions())
         {
-            prescription.getPatientUser().removePrescription(prescription);
-            eM.remove(prescription);
+            prescriptionExercise.getPatientUser().removePrescriptionExercises(prescriptionExercise);
+            eM.remove(prescriptionExercise);
         }
         eM.remove(program);
     }

@@ -1,8 +1,7 @@
 package pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs;
 
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.PatientUser;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.Prescription;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.ProfHealthcare;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.PrescriptionExercise;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.Program;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityExistsException;
@@ -20,12 +19,12 @@ import java.util.Date;
 import java.util.List;
 
 @Stateless
-public class PrescriptionBean {
+public class PrescriptionExerciseBean {
     @PersistenceContext
     EntityManager eM;
 
     public void create(int code, int duracao, String insertiondataString, String patientUser_username, int codeProgram) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
-        if(findPrescription(code) != null)
+        if(findPrescriptionExercise(code) != null)
         {
             throw new MyEntityExistsException("A prescrição com o código " + code + " já foi inserida");
         }
@@ -42,9 +41,9 @@ public class PrescriptionBean {
         try
         {
             Date insertiondata = convertStringtoDate(insertiondataString);
-            Prescription newPrescription = new Prescription(code, duracao, insertiondata, program, patientUser);
+            PrescriptionExercise newPrescription = new PrescriptionExercise(code, duracao, insertiondata, program, patientUser);
             eM.persist(newPrescription);
-            patientUser.addPrescription(newPrescription);
+            patientUser.addPrescriptionExercises(newPrescription);
             program.addPrescription(newPrescription);
         }
         catch (ConstraintViolationException e)
@@ -53,21 +52,21 @@ public class PrescriptionBean {
         }
     }
 
-    public Prescription findPrescription(int code)
+    public PrescriptionExercise findPrescriptionExercise(int code)
     {
-        return eM.find(Prescription.class, code);
+        return eM.find(PrescriptionExercise.class, code);
     }
 
-    public List<Prescription> getAllPatientPrescriptions(String patientUser_username){
-        return eM.createNamedQuery("getPatientPrescriptions", Prescription.class).setParameter("username", patientUser_username).getResultList();
+    public List<PrescriptionExercise> getAllPatientPrescriptionsExercises(String patientUser_username){
+        return eM.createNamedQuery("getPatientPrescriptionsExercise", PrescriptionExercise.class).setParameter("username", patientUser_username).getResultList();
     }
 
-    public List<Prescription> getAllPatientPrescriptionsCode(String patientUser_username, int code){
-        return eM.createNamedQuery("getPatientPrescriptionsCode", Prescription.class).setParameter("username", patientUser_username).setParameter("code", code).getResultList();
+    public List<PrescriptionExercise> getAllPatientPrescriptionsExercisesCode(String patientUser_username, int code){
+        return eM.createNamedQuery("getPatientPrescriptionsExerciseCode", PrescriptionExercise.class).setParameter("username", patientUser_username).setParameter("code", code).getResultList();
     }
 
     public void update(int code, int duracao) throws MyEntityNotFoundException, MyConstraintViolationException {
-        Prescription prescription = findPrescription(code);
+        PrescriptionExercise prescription = findPrescriptionExercise(code);
         if(prescription == null)
         {
             throw new MyEntityNotFoundException("A prescrição com o código " + code + " não existe");
@@ -83,18 +82,18 @@ public class PrescriptionBean {
     }
 
     public void remove(int code) throws MyEntityNotFoundException {
-        Prescription prescription = findPrescription(code);
+        PrescriptionExercise prescription = findPrescriptionExercise(code);
         if(prescription == null)
         {
             throw new MyEntityNotFoundException("A prescrição com o código " + code + " não existe");
         }
-        prescription.getPatientUser().removePrescription(prescription);
+        prescription.getPatientUser().removePrescriptionExercises(prescription);
         prescription.getProgram().removePrescription(prescription);
         eM.remove(prescription);
     }
 
     public void expirePrescription(int code) throws MyIllegalArgumentException, MyEntityNotFoundException {
-        Prescription prescription = findPrescription(code);
+        PrescriptionExercise prescription = findPrescriptionExercise(code);
         if(prescription == null)
         {
             throw new MyEntityNotFoundException("A prescrição com o código " + code + " não existe");

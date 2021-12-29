@@ -1,5 +1,8 @@
 package pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos;
 
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.PrescriptionMedic;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.PrescriptionNutri;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,11 +12,15 @@ public class PatientUserDTO {
     private String name;
     private String email;
     private List<ProfHealthcareDTO> profHealthcareDTOList;
-    private List<PrescriptionDTO> prescriptionDTOList;
+    private List<PrescriptionExerciseDTO> prescriptionExerciseDTOList;
+    private List<PrescriptionMedicDTO> prescriptionMedicDTOList;
+    private List<PrescriptionNutriDTO> prescriptionNutriDTOList;
 
     public PatientUserDTO() {
         profHealthcareDTOList = new ArrayList<>();
-        prescriptionDTOList = new ArrayList<>();
+        prescriptionExerciseDTOList = new ArrayList<>();
+        prescriptionMedicDTOList = new ArrayList<>();
+        prescriptionNutriDTOList = new ArrayList<>();
     }
 
     public PatientUserDTO(String username, String password, String name, String email) {
@@ -22,7 +29,9 @@ public class PatientUserDTO {
         this.name = name;
         this.email = email;
         profHealthcareDTOList = new ArrayList<>();
-        prescriptionDTOList = new ArrayList<>();
+        prescriptionExerciseDTOList = new ArrayList<>();
+        prescriptionMedicDTOList = new ArrayList<>();
+        prescriptionNutriDTOList = new ArrayList<>();
     }
 
     public List<ProfHealthcareDTO> getProfHealthcareDTOList() {
@@ -33,12 +42,28 @@ public class PatientUserDTO {
         this.profHealthcareDTOList = profHealthcareDTOList;
     }
 
-    public List<PrescriptionDTO> getPrescriptionDTOList() {
-        return prescriptionDTOList;
+    public List<PrescriptionExerciseDTO> getPrescriptionExerciseDTOList() {
+        return prescriptionExerciseDTOList;
     }
 
-    public void setPrescriptionDTOList(List<PrescriptionDTO> prescriptionDTOList) {
-        this.prescriptionDTOList = prescriptionDTOList;
+    public void setPrescriptionExerciseDTOList(List<PrescriptionExerciseDTO> prescriptionExerciseDTOList) {
+        this.prescriptionExerciseDTOList = prescriptionExerciseDTOList;
+    }
+
+    public List<PrescriptionMedicDTO> getPrescriptionMedicDTOList() {
+        return prescriptionMedicDTOList;
+    }
+
+    public void setPrescriptionMedicDTOList(List<PrescriptionMedicDTO> prescriptionMedicDTOList) {
+        this.prescriptionMedicDTOList = prescriptionMedicDTOList;
+    }
+
+    public List<PrescriptionNutriDTO> getPrescriptionNutriDTOList() {
+        return prescriptionNutriDTOList;
+    }
+
+    public void setPrescriptionNutriDTOList(List<PrescriptionNutriDTO> prescriptionNutriDTOList) {
+        this.prescriptionNutriDTOList = prescriptionNutriDTOList;
     }
 
     public String getUsername() {

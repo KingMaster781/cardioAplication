@@ -8,14 +8,11 @@ import java.util.List;
 
 @Entity
 @Table(name = "Prescriptions")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NamedQueries({
         @NamedQuery(
-                name = "getPatientPrescriptions",
-                query = "SELECT p FROM Prescription p WHERE p.patientUser.username = :username"
-        ),
-        @NamedQuery(
-                name = "getPatientPrescriptionsCode",
-                query = "SELECT p FROM Prescription p WHERE p.patientUser.username = :username and p.code = :code"
+                name = "getAllPrescriptions",
+                query = "SELECT p FROM Prescription p ORDER BY p.duracao" // JPQL
         )
 })
 
@@ -27,23 +24,15 @@ public class Prescription {
     @NotNull
     private Date insertionDate;
     private boolean isVigor;
-    @ManyToOne
-    @JoinColumn(name = "program_code")
-    private Program program;
-    @ManyToOne
-    @JoinColumn(name = "patientuser_username")
-    private PatientUser patientUser;
 
     public Prescription() {
         isVigor = true;
     }
 
-    public Prescription(int code, int duracao, Date insertionDate, Program program, PatientUser patientUser) {
+    public Prescription(int code, int duracao, Date insertionDate) {
         this.code = code;
         this.duracao = duracao;
         this.insertionDate = insertionDate;
-        this.program = program;
-        this.patientUser = patientUser;
         isVigor = true;
     }
 
@@ -77,21 +66,5 @@ public class Prescription {
 
     public void setVigor(boolean vigor) {
         isVigor = vigor;
-    }
-
-    public Program getProgram() {
-        return program;
-    }
-
-    public void setProgram(Program program) {
-        this.program = program;
-    }
-
-    public PatientUser getPatientUser() {
-        return patientUser;
-    }
-
-    public void setPatientUser(PatientUser patientUser) {
-        this.patientUser = patientUser;
     }
 }
