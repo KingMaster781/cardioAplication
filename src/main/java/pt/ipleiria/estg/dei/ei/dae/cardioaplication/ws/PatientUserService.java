@@ -20,6 +20,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.security.Principal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -94,7 +96,7 @@ public class PatientUserService {
         return new PrescriptionDTO(
                 prescription.getCode(),
                 prescription.getDuracao(),
-                prescription.getInsertionDate(),
+                convertDatetoString(prescription.getInsertionDate()),
                 vigor,
                 prescription.getProgram().getCode(),
                 prescription.getPatientUser().getUsername()
@@ -103,6 +105,12 @@ public class PatientUserService {
 
     private List<PrescriptionDTO> prescriptiontoDTOs(List<Prescription> prescriptions) {
         return prescriptions.stream().map(this::prescriptionDTO).collect(Collectors.toList());
+    }
+
+    private String convertDatetoString(Date data)
+    {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        return formatter.format(data);
     }
 
     @GET

@@ -7,11 +7,16 @@ import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.Program;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityNotFoundException;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyIllegalArgumentException;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Stateless
@@ -19,7 +24,7 @@ public class PrescriptionBean {
     @PersistenceContext
     EntityManager eM;
 
-    public void create(int code, int duracao, String insertiondata, String patientUser_username, int codeProgram) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
+    public void create(int code, int duracao, String insertiondataString, String patientUser_username, int codeProgram) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
         if(findPrescription(code) != null)
         {
             throw new MyEntityExistsException("A prescrição com o código " + code + " já foi inserida");
@@ -36,6 +41,7 @@ public class PrescriptionBean {
         }
         try
         {
+            Date insertiondata = convertStringtoDate(insertiondataString);
             Prescription newPrescription = new Prescription(code, duracao, insertiondata, program, patientUser);
             eM.persist(newPrescription);
             patientUser.addPrescription(newPrescription);
@@ -85,6 +91,37 @@ public class PrescriptionBean {
         prescription.getPatientUser().removePrescription(prescription);
         prescription.getProgram().removePrescription(prescription);
         eM.remove(prescription);
+    }
+
+    public void expirePrescription(int code) throws MyIllegalArgumentException, MyEntityNotFoundException {
+        Prescription prescription = findPrescription(code);
+        if(prescription == null)
+        {
+            throw new MyEntityNotFoundException("A prescrição com o código " + code + " não existe");
+        }
+        if(!prescription.isVigor())
+        {
+            throw new MyIllegalArgumentException("A prescrição com o código " + code + " já se encontra expirada");
+        }
+        prescription.setVigor(false);
+    }
+
+    private Date convertStringtoDate(String stringDate)
+    {
+        DateFormat fmt = new SimpleDateFormat("dd/MM/yyyy");
+        Date data = null;
+        try
+        {
+            if(!stringDate.equalsIgnoreCase("  /  /    "))
+            {
+                data = new Date(fmt.parse(stringDate).getTime());
+            }
+        }
+        catch (ParseException e)
+        {
+            e.printStackTrace();
+        }
+        return data;
     }
 
 }

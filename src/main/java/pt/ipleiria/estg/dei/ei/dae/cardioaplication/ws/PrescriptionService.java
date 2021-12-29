@@ -15,6 +15,8 @@ import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,7 +38,7 @@ public class PrescriptionService {
         return new PrescriptionDTO(
                 prescription.getCode(),
                 prescription.getDuracao(),
-                prescription.getInsertionDate(),
+                convertDatetoString(prescription.getInsertionDate()),
                 vigor,
                 prescription.getProgram().getCode(),
                 prescription.getPatientUser().getUsername()
@@ -45,6 +47,12 @@ public class PrescriptionService {
 
     private List<PrescriptionDTO> toDTOs(List<Prescription> prescriptions) {
         return prescriptions.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    private String convertDatetoString(Date data)
+    {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        return formatter.format(data);
     }
 
     @GET
@@ -88,5 +96,12 @@ public class PrescriptionService {
         if (prescription != null)
             return Response.ok(toDTO(prescription)).build();
         return Response.status(Response.Status.NOT_FOUND).entity("ERROR_FINDING_PRESCRIPTION").build();
+    }
+
+    @PUT
+    @Path("/expire/{code}")
+    public Response expirePrescription(@PathParam("code") int code) throws MyEntityNotFoundException, MyIllegalArgumentException {
+        prescriptionBean.expirePrescription(code);
+        return Response.status(Response.Status.OK).build();
     }
 }

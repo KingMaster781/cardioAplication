@@ -2,7 +2,6 @@ package pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -19,7 +18,7 @@ public class Data{
     @NotNull
     private String insertionDate;
     @NotNull
-    private String descriData;
+    private Date descriData;
     @NotNull
     private Double value;
     @ManyToOne
@@ -29,7 +28,7 @@ public class Data{
     public Data() {
     }
 
-    public Data(int code, String insertionDate, String descriData, Double value, PatientUser patientUser) {
+    public Data(int code, String insertionDate, Date descriData, Double value, PatientUser patientUser) {
         this.code = code;
         this.insertionDate = insertionDate;
         this.descriData = descriData;
@@ -53,11 +52,11 @@ public class Data{
         this.insertionDate = insertionDate;
     }
 
-    public String getDescriData() {
+    public Date getDescriData() {
         return descriData;
     }
 
-    public void setDescriData(String descriData) {
+    public void setDescriData(Date descriData) {
         this.descriData = descriData;
     }
 

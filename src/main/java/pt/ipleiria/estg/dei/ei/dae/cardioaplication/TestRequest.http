@@ -61,6 +61,12 @@ Content-Type: application/json
   "patientUser_username": "rafaela123"
 }
 #####
+PUT http://localhost:8080/cardioAplication/api/pescription/expire/1
+Content-Type: application/json
+
+{
+}
+#####
 GET http://localhost:8080/cardioAplication/api/program/
 Accept: application/json
 #####

@@ -3,6 +3,7 @@ package pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities;
 import io.smallrye.common.constraint.NotNull;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -24,7 +25,7 @@ public class Prescription {
     @NotNull
     private int duracao;
     @NotNull
-    private String insertionDate;
+    private Date insertionDate;
     private boolean isVigor;
     @ManyToOne
     @JoinColumn(name = "program_code")
@@ -37,7 +38,7 @@ public class Prescription {
         isVigor = true;
     }
 
-    public Prescription(int code, int duracao, String insertionDate, Program program, PatientUser patientUser) {
+    public Prescription(int code, int duracao, Date insertionDate, Program program, PatientUser patientUser) {
         this.code = code;
         this.duracao = duracao;
         this.insertionDate = insertionDate;
@@ -62,11 +63,11 @@ public class Prescription {
         this.duracao = duracao;
     }
 
-    public String getInsertionDate() {
+    public Date getInsertionDate() {
         return insertionDate;
     }
 
-    public void setInsertionDate(String insertionDate) {
+    public void setInsertionDate(Date insertionDate) {
         this.insertionDate = insertionDate;
     }
 

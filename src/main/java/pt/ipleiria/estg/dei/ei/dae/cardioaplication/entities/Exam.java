@@ -2,6 +2,7 @@ package pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Entity
 @Table(name = "exam")
@@ -16,9 +17,9 @@ public class Exam {
     @Id
     private int code;
     @NotNull
-    private String date;
+    private Date date;
     @NotNull
-    private String dateResult;
+    private Date dateResult;
     private boolean isDone;
     @ManyToOne
     @JoinColumn(name = "patientuser_username")
@@ -28,7 +29,7 @@ public class Exam {
         isDone = false;
     }
 
-    public Exam(int code, String date, String dateResult, PatientUser patientUser) {
+    public Exam(int code, Date date, Date dateResult, PatientUser patientUser) {
         this.code = code;
         this.date = date;
         this.dateResult = dateResult;
@@ -44,19 +45,19 @@ public class Exam {
         this.code = code;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
-    public String getDateResult() {
+    public Date getDateResult() {
         return dateResult;
     }
 
-    public void setDateResult(String dateResult) {
+    public void setDateResult(Date dateResult) {
         this.dateResult = dateResult;
     }
 
