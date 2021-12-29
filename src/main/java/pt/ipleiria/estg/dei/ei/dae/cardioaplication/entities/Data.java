@@ -16,7 +16,7 @@ public class Data{
     @Id
     private int code;
     @NotNull
-    private String insertionDate;
+    private Date insertionDate;
     @NotNull
     private Date descriData;
     @NotNull
@@ -28,7 +28,7 @@ public class Data{
     public Data() {
     }
 
-    public Data(int code, String insertionDate, Date descriData, Double value, PatientUser patientUser) {
+    public Data(int code, Date insertionDate, Date descriData, Double value, PatientUser patientUser) {
         this.code = code;
         this.insertionDate = insertionDate;
         this.descriData = descriData;
@@ -44,11 +44,11 @@ public class Data{
         this.code = code;
     }
 
-    public String getInsertionDate() {
+    public Date getInsertionDate() {
         return insertionDate;
     }
 
-    public void setInsertionDate(String insertionDate) {
+    public void setInsertionDate(Date insertionDate) {
         this.insertionDate = insertionDate;
     }
 
