@@ -94,13 +94,16 @@ Content-Type: application/json
 GET http://localhost:8080/cardioAplication/api/medicine/
 Accept: application/json
 #####
+GET http://localhost:8080/cardioAplication/api/medicine/1
+Accept: application/json
+#####
 GET http://localhost:8080/cardioAplication/api/prescription-exercises/1
 Accept: application/json
 #####
-GET http://localhost:8080/cardioAplication/api/prescription-medic/3
+GET http://localhost:8080/cardioAplication/api/prescription-medics/3
 Accept: application/json
 #####
-GET http://localhost:8080/cardioAplication/api/prescription-nutri/2
+GET http://localhost:8080/cardioAplication/api/prescription-nutris/2
 Accept: application/json
 #####
 GET http://localhost:8080/cardioAplication/api/patientusers/rafaela123/prescription-exercises/
@@ -109,8 +112,8 @@ Accept: application/json
 GET http://localhost:8080/cardioAplication/api/patientusers/joaquim123/prescription-exercises/
 Accept: application/json
 #####
-GET http://localhost:8080/cardioAplication/api/patientusers/joaquim123/prescription-medic/
+GET http://localhost:8080/cardioAplication/api/patientusers/joaquim123/prescription-medics/3
 Accept: application/json
 #####
-GET http://localhost:8080/cardioAplication/api/patientusers/joaquim123/prescription-nutri/
+GET http://localhost:8080/cardioAplication/api/patientusers/joaquim123/prescription-nutris/
 Accept: application/json

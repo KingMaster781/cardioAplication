@@ -50,7 +50,7 @@ public class ConfigBean {
             prescriptionExerciseBean.create(1, 30, "23/12/2021", "rafaela123", 1);
             prescriptionNutriBean.create(2, 30, "29/12/2021", "joaquim123", "comer mais legumes");
             prescriptionMedicBean.create(3, 30, "29/12/2021", "joaquim123");
-            prescriptionMedicBean.enrollMedicine(1, 1);
+            prescriptionMedicBean.enrollMedicine(3, 1);
         }
         catch (Exception e)
         {

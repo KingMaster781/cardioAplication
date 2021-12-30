@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Path("prescription-medic")
+@Path("prescription-medics")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public class PrescriptionMedicService {

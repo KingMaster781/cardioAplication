@@ -58,7 +58,7 @@ public class MedicineService {
     public Response create (MedicineDTO medicineDTO) throws MyConstraintViolationException, MyEntityExistsException {
         medicineBean.create(medicineDTO.getCode(),
                 medicineDTO.getName(),
-                medicineDTO.getDescreption(),
+                medicineDTO.getDescription(),
                 medicineDTO.getWarning());
         return Response.status(Response.Status.OK).build();
     }
@@ -73,7 +73,7 @@ public class MedicineService {
     @PUT
     @Path("/{code}")
     public Response update (@PathParam("code") int code, MedicineDTO medicineDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
-        medicineBean.update(code, medicineDTO.getName(), medicineDTO.getDescreption(), medicineDTO.getWarning());
+        medicineBean.update(code, medicineDTO.getName(), medicineDTO.getDescription(), medicineDTO.getWarning());
         return Response.status(Response.Status.OK).build();
     }
 

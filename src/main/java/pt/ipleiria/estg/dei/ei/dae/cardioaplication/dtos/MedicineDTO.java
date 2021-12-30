@@ -4,17 +4,17 @@ public class MedicineDTO {
 
     private int code;
     private String name;
-    private String descreption;
+    private String description;
     private String warning;
 
     public MedicineDTO() {
 
     }
 
-    public MedicineDTO(int code, String name, String descreption, String warning) {
+    public MedicineDTO(int code, String name, String description, String warning) {
         this.code = code;
         this.name = name;
-        this.descreption = descreption;
+        this.description = description;
         this.warning = warning;
     }
 
@@ -34,12 +34,12 @@ public class MedicineDTO {
         this.name = name;
     }
 
-    public String getDescreption() {
-        return descreption;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescreption(String descreption) {
-        this.descreption = descreption;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getWarning() {
