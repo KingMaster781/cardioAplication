@@ -61,6 +61,12 @@ Content-Type: application/json
   "patientUser_username": "rafaela123"
 }
 #####
+PUT http://localhost:8080/cardioAplication/api/pescription/expire/1
+Content-Type: application/json
+
+{
+}
+#####
 GET http://localhost:8080/cardioAplication/api/program/
 Accept: application/json
 #####
@@ -70,8 +76,44 @@ Accept: application/json
 GET http://localhost:8080/cardioAplication/api/patientusers/rafaela123/profHealthcares/federico.santos
 Accept: application/json
 #####
-GET http://localhost:8080/cardioAplication/api/patientusers/rafaela123/prescription/1
+GET http://localhost:8080/cardioAplication/api/patientusers/rafaela123/
 Accept: application/json
 #####
 GET http://localhost:8080/cardioAplication/api/prescription/
+Accept: application/json
+#####
+POST http://localhost:8080/cardioAplication/api/medicine/
+Content-Type: application/json
+
+{ "code" : "1",
+  "name" : "Brufen",
+  "description": "Serve para aliviar as dores",
+  "warning": "Não usar em pessoas asmáticas"
+}
+#####
+GET http://localhost:8080/cardioAplication/api/medicine/
+Accept: application/json
+#####
+GET http://localhost:8080/cardioAplication/api/medicine/1
+Accept: application/json
+#####
+GET http://localhost:8080/cardioAplication/api/prescription-exercises/1
+Accept: application/json
+#####
+GET http://localhost:8080/cardioAplication/api/prescription-medics/3
+Accept: application/json
+#####
+GET http://localhost:8080/cardioAplication/api/prescription-nutris/2
+Accept: application/json
+#####
+GET http://localhost:8080/cardioAplication/api/patientusers/rafaela123/prescription-exercises/
+Accept: application/json
+#####
+GET http://localhost:8080/cardioAplication/api/patientusers/joaquim123/prescription-exercises/
+Accept: application/json
+#####
+GET http://localhost:8080/cardioAplication/api/patientusers/joaquim123/prescription-medics/3
+Accept: application/json
+#####
+GET http://localhost:8080/cardioAplication/api/patientusers/joaquim123/prescription-nutris/
 Accept: application/json

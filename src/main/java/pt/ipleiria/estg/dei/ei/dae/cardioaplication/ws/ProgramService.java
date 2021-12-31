@@ -1,12 +1,9 @@
 package pt.ipleiria.estg.dei.ei.dae.cardioaplication.ws;
 
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.ExerciseDTO;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.PatientUserDTO;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.PrescriptionDTO;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.ProgramDTO;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.ProgramBean;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.Exercise;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.PatientUser;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.Program;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityExistsException;

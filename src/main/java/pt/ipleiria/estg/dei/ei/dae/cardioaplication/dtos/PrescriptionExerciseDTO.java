@@ -1,6 +1,6 @@
 package pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos;
 
-public class PrescriptionDTO {
+public class PrescriptionExerciseDTO {
     private int code;
     private int duracao;
     private String insertionDate;
@@ -8,10 +8,10 @@ public class PrescriptionDTO {
     private int programCode;
     private String patientUser_username;
 
-    public PrescriptionDTO() {
+    public PrescriptionExerciseDTO() {
     }
 
-    public PrescriptionDTO(int code, int duracao, String insertionDate, String vigor, int programCode, String patientUser_username) {
+    public PrescriptionExerciseDTO(int code, int duracao, String insertionDate, String vigor, int programCode, String patientUser_username) {
         this.code = code;
         this.duracao = duracao;
         this.insertionDate = insertionDate;

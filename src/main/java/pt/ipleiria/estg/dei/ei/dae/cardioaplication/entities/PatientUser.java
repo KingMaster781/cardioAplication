@@ -22,13 +22,19 @@ public class PatientUser extends User implements Serializable {
     @OneToMany(mappedBy = "patientUser", cascade = CascadeType.REMOVE)
     private List<Exam> examList;
     @OneToMany(mappedBy = "patientUser", cascade = CascadeType.REMOVE)
-    private List<Prescription> prescriptions;
+    private List<PrescriptionExercise> prescriptionExercises;
+    @OneToMany(mappedBy = "patientUser", cascade = CascadeType.REMOVE)
+    private List<PrescriptionMedic> prescriptionMedics;
+    @OneToMany(mappedBy = "patientUser", cascade = CascadeType.REMOVE)
+    private List<PrescriptionNutri> prescriptionNutris;
 
     public PatientUser() {
         dataList = new ArrayList<>();
         examList = new ArrayList<>();
         profHealthcares = new ArrayList<>();
-        prescriptions = new ArrayList<>();
+        prescriptionExercises = new ArrayList<>();
+        prescriptionMedics = new ArrayList<>();
+        prescriptionNutris = new ArrayList<>();
     }
 
     public PatientUser(String username, String password, String name, String email) {
@@ -36,7 +42,9 @@ public class PatientUser extends User implements Serializable {
         dataList = new ArrayList<>();
         examList = new ArrayList<>();
         profHealthcares = new ArrayList<>();
-        prescriptions = new ArrayList<>();
+        prescriptionExercises = new ArrayList<>();
+        prescriptionMedics = new ArrayList<>();
+        prescriptionNutris = new ArrayList<>();
     }
 
     public List<ProfHealthcare> getProfHealthcare() {
@@ -63,12 +71,28 @@ public class PatientUser extends User implements Serializable {
         this.examList = examList;
     }
 
-    public List<Prescription> getPrescriptions() {
-        return prescriptions;
+    public List<PrescriptionExercise> getPrescriptionExercises() {
+        return prescriptionExercises;
     }
 
-    public void setPrescriptions(List<Prescription> prescriptions) {
-        this.prescriptions = prescriptions;
+    public void setPrescriptionExercises(List<PrescriptionExercise> prescriptionExercises) {
+        this.prescriptionExercises = prescriptionExercises;
+    }
+
+    public List<PrescriptionMedic> getPrescriptionMedics() {
+        return prescriptionMedics;
+    }
+
+    public void setPrescriptionMedics(List<PrescriptionMedic> prescriptionMedics) {
+        this.prescriptionMedics = prescriptionMedics;
+    }
+
+    public List<PrescriptionNutri> getPrescriptionNutris() {
+        return prescriptionNutris;
+    }
+
+    public void setPrescriptionNutris(List<PrescriptionNutri> prescriptionNutris) {
+        this.prescriptionNutris = prescriptionNutris;
     }
 
     public void addData(Data data)
@@ -119,19 +143,51 @@ public class PatientUser extends User implements Serializable {
         }
     }
 
-    public void addPrescription(Prescription prescription)
+    public void addPrescriptionExercises(PrescriptionExercise prescription)
     {
-        if (prescription != null && !prescriptions.contains(prescription))
+        if (prescription != null && !prescriptionExercises.contains(prescription))
         {
-            prescriptions.add(prescription);
+            prescriptionExercises.add(prescription);
         }
     }
 
-    public void removePrescription(Prescription prescription)
+    public void removePrescriptionExercises(PrescriptionExercise prescription)
     {
-        if (prescription != null && prescriptions.contains(prescription))
+        if (prescription != null && prescriptionExercises.contains(prescription))
         {
-            prescriptions.remove(prescription);
+            prescriptionExercises.remove(prescription);
+        }
+    }
+
+    public void addPrescriptionMedics(PrescriptionMedic prescription)
+    {
+        if (prescription != null && !prescriptionMedics.contains(prescription))
+        {
+            prescriptionMedics.add(prescription);
+        }
+    }
+
+    public void removePrescriptionMedics(PrescriptionMedic prescription)
+    {
+        if (prescription != null && prescriptionMedics.contains(prescription))
+        {
+            prescriptionMedics.remove(prescription);
+        }
+    }
+
+    public void addPrescriptionNutri(PrescriptionNutri prescription)
+    {
+        if (prescription != null && !prescriptionNutris.contains(prescription))
+        {
+            prescriptionNutris.add(prescription);
+        }
+    }
+
+    public void removePrescriptionNutri(PrescriptionNutri prescription)
+    {
+        if (prescription != null && prescriptionNutris.contains(prescription))
+        {
+            prescriptionNutris.remove(prescription);
         }
     }
 }
