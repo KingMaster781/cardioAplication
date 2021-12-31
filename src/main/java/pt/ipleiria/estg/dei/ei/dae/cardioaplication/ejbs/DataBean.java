@@ -45,7 +45,7 @@ public class DataBean {
         return eM.find(Data.class, code);
     }
 
-    public void update(int code, String descriData, double value) throws MyEntityNotFoundException, MyConstraintViolationException {
+    public void update(int code, double value) throws MyEntityNotFoundException, MyConstraintViolationException {
         Data data = findData(code);
         if(data == null)
         {
@@ -53,7 +53,6 @@ public class DataBean {
         }
         try
         {
-            data.setDescriData(descriData);
             data.setValue(value);
         }
         catch (ConstraintViolationException e)
