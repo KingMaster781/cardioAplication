@@ -7,16 +7,18 @@ public class DataDTO{
     private String descriData;
     private Double value;
     private String patientUsername;
+    private int typeOfDataCode;
 
     public DataDTO() {
     }
 
-    public DataDTO(int code, String insertionDate, String descriData, Double value, String patientUsername) {
+    public DataDTO(int code, String insertionDate, String descriData, Double value, String patientUsername, int typeOfDataCode) {
         this.code = code;
         this.insertionDate = insertionDate;
         this.descriData = descriData;
         this.value = value;
         this.patientUsername = patientUsername;
+        this.typeOfDataCode = typeOfDataCode;
     }
 
     public int getCode() {
@@ -57,5 +59,13 @@ public class DataDTO{
 
     public void setPatientUsername(String patientUsername) {
         this.patientUsername = patientUsername;
+    }
+
+    public int getTypeOfDataCode() {
+        return typeOfDataCode;
+    }
+
+    public void setTypeOfDataCode(int typeOfDataCode) {
+        this.typeOfDataCode = typeOfDataCode;
     }
 }

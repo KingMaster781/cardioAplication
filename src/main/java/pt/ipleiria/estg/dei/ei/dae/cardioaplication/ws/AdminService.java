@@ -1,13 +1,16 @@
 package pt.ipleiria.estg.dei.ei.dae.cardioaplication.ws;
 
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.AdminDTO;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.EmailDTO;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.AdminBean;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.EmailBean;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.Admin;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityNotFoundException;
 
 import javax.ejb.EJB;
+import javax.mail.MessagingException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -20,6 +23,8 @@ import java.util.stream.Collectors;
 public class AdminService {
     @EJB
     private AdminBean adminBean;
+    @EJB
+    private EmailBean emailBean;
 
     @GET
     @Path("/")
@@ -81,4 +86,16 @@ public class AdminService {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         return Response.status(Response.Status.OK).entity(toDTO(admin)).build();
     }
+
+    @POST
+    @Path("/{username}/email/send")
+    public Response sendEmail(@PathParam("username") String username, EmailDTO email) throws MyEntityNotFoundException, MessagingException {
+        Admin admin = adminBean.findAdmin(username);
+        if (admin == null) {
+            throw new MyEntityNotFoundException("Um admin com o username '" + username + "' não foi encontrado nos registos.");
+        }
+        emailBean.send(admin.getEmail(), email.getSubject(), email.getMessage());
+        return Response.status(Response.Status.OK).entity("Email Enviado").build();
+    }
+
 }

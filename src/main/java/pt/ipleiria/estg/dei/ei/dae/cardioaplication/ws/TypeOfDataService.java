@@ -4,6 +4,7 @@ import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.PatientUserDTO;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.ProfHealthcareDTO;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.TypeOfDataDTO;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.TypeOfDataBean;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.Data;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.PatientUser;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.ProfHealthcare;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.TypeOfData;
@@ -41,6 +42,17 @@ public class TypeOfDataService {
     @Path("/")
     public List<TypeOfDataDTO> getAllPatientWS(){
         return toDTOs(typeOfDataBean.getAllTypesOfData());
+    }
+
+    @GET
+    @Path("{code}")
+    public Response consult(@PathParam("code") int code) {
+        TypeOfData typeData = typeOfDataBean.findTypeOfDate(code);
+        if (typeData!=null)
+        {
+            return Response.ok(toDTO(typeData)).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).entity("Tipo de dados pedido não existe").build();
     }
 
     @POST

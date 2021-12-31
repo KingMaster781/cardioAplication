@@ -117,3 +117,10 @@ Accept: application/json
 #####
 GET http://localhost:8080/cardioAplication/api/patientusers/joaquim123/prescription-nutris/
 Accept: application/json
+#####
+POST http://localhost:8080/cardioAplication/api/patientusers/joaquim123/email/send
+Content-Type: application/json
+
+{"subject" : "Resposta",
+  "message" :  "Vamos sim"
+}

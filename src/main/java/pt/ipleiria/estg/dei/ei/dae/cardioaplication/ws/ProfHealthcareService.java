@@ -1,8 +1,11 @@
 package pt.ipleiria.estg.dei.ei.dae.cardioaplication.ws;
 
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.EmailDTO;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.PatientUserDTO;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.ProfHealthcareDTO;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.EmailBean;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.ProfHealthcareBean;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.Admin;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.PatientUser;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.ProfHealthcare;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyConstraintViolationException;
@@ -11,6 +14,7 @@ import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityNotFoundE
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyIllegalArgumentException;
 
 import javax.ejb.EJB;
+import javax.mail.MessagingException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -23,6 +27,8 @@ import java.util.stream.Collectors;
 public class ProfHealthcareService {
     @EJB
     private ProfHealthcareBean profHealthcareBean;
+    @EJB
+    private EmailBean emailBean;
 
     @GET
     @Path("/")
@@ -140,5 +146,16 @@ public class ProfHealthcareService {
     public Response unrollPatient (@PathParam("username") String username, PatientUserDTO patientUserDTO) throws MyEntityNotFoundException, MyIllegalArgumentException {
         profHealthcareBean.unrollPatient(patientUserDTO.getUsername(), username);
         return Response.status(Response.Status.OK).build();
+    }
+
+    @POST
+    @Path("/{username}/email/send")
+    public Response sendEmail(@PathParam("username") String username, EmailDTO email) throws MyEntityNotFoundException, MessagingException {
+        ProfHealthcare profHealthcare = profHealthcareBean.findProfHeathcare(username);
+        if (profHealthcare == null) {
+            throw new MyEntityNotFoundException("Um profissional de saude com o username '" + username + "' não foi encontrado nos registos.");
+        }
+        emailBean.send(profHealthcare.getEmail(), email.getSubject(), email.getMessage());
+        return Response.status(Response.Status.OK).entity("Email Enviado").build();
     }
 }

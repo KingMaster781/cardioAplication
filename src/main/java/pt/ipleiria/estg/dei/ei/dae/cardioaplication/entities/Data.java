@@ -2,6 +2,7 @@ package pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -16,24 +17,28 @@ public class Data{
     @Id
     private int code;
     @NotNull
-    private Date insertionDate;
+    private String insertionDate;
     @NotNull
-    private Date descriData;
+    private String descriData;
     @NotNull
     private Double value;
     @ManyToOne
     @JoinColumn(name = "patientuser_username")
     private PatientUser patientUser;
+    @ManyToOne
+    @JoinColumn(name = "data_typeOfData")
+    private TypeOfData typeOfData;
 
     public Data() {
     }
 
-    public Data(int code, Date insertionDate, Date descriData, Double value, PatientUser patientUser) {
+    public Data(int code, String insertionDate, String descriData, Double value, PatientUser patientUser, TypeOfData typeOfData) {
         this.code = code;
         this.insertionDate = insertionDate;
         this.descriData = descriData;
         this.value = value;
         this.patientUser = patientUser;
+        this.typeOfData = typeOfData;
     }
 
     public int getCode() {
@@ -44,19 +49,19 @@ public class Data{
         this.code = code;
     }
 
-    public Date getInsertionDate() {
+    public String getInsertionDate() {
         return insertionDate;
     }
 
-    public void setInsertionDate(Date insertionDate) {
+    public void setInsertionDate(String insertionDate) {
         this.insertionDate = insertionDate;
     }
 
-    public Date getDescriData() {
+    public String getDescriData() {
         return descriData;
     }
 
-    public void setDescriData(Date descriData) {
+    public void setDescriData(String descriData) {
         this.descriData = descriData;
     }
 
@@ -74,5 +79,13 @@ public class Data{
 
     public void setPatientUser(PatientUser patientUser) {
         this.patientUser = patientUser;
+    }
+
+    public TypeOfData getTypeOfData() {
+        return typeOfData;
+    }
+
+    public void setTypeOfData(TypeOfData typeOfData) {
+        this.typeOfData = typeOfData;
     }
 }

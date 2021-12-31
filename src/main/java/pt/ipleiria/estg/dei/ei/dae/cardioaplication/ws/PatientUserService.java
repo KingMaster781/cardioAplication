@@ -1,16 +1,15 @@
 package pt.ipleiria.estg.dei.ei.dae.cardioaplication.ws;
 
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.*;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.PatientUserBean;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.PrescriptionExerciseBean;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.PrescriptionMedicBean;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.PrescriptionNutriBean;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.*;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.*;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityNotFoundException;
 
 import javax.ejb.EJB;
+import javax.mail.MessagingException;
+import javax.mail.Transport;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -31,6 +30,8 @@ public class PatientUserService {
     private PrescriptionMedicBean prescriptionMedicBean;
     @EJB
     private PrescriptionNutriBean prescriptionNutriBean;
+    @EJB
+    private EmailBean emailBean;
 
     @GET
     @Path("/")
@@ -300,5 +301,16 @@ public class PatientUserService {
             return Response.ok(prescriptionNutriDTOS(prescriptionNutris)).build();
         }
         return Response.status(Response.Status.NOT_FOUND).entity("Não possui nenhuma prescrição com esse código").build();
+    }
+
+    @POST
+    @Path("/{username}/email/send")
+    public Response sendEmail(@PathParam("username") String username, EmailDTO email) throws MyEntityNotFoundException, MessagingException {
+        PatientUser patientUser = patientUserBean.findPatient(username);
+        if (patientUser == null) {
+            throw new MyEntityNotFoundException("Um paciente com o username '" + username + "' não foi encontrado nos registos.");
+        }
+        emailBean.send(patientUser.getEmail(), email.getSubject(), email.getMessage());
+        return Response.status(Response.Status.OK).entity("Email Enviado").build();
     }
 }
