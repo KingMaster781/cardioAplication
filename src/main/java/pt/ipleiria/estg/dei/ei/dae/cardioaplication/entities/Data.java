@@ -25,16 +25,20 @@ public class Data{
     @ManyToOne
     @JoinColumn(name = "patientuser_username")
     private PatientUser patientUser;
+    @ManyToOne
+    @JoinColumn(name = "data_typeOfData")
+    private TypeOfData typeOfData;
 
     public Data() {
     }
 
-    public Data(int code, String insertionDate, String descriData, Double value, PatientUser patientUser) {
+    public Data(int code, String insertionDate, String descriData, Double value, PatientUser patientUser, TypeOfData typeOfData) {
         this.code = code;
         this.insertionDate = insertionDate;
         this.descriData = descriData;
         this.value = value;
         this.patientUser = patientUser;
+        this.typeOfData = typeOfData;
     }
 
     public int getCode() {
@@ -75,5 +79,13 @@ public class Data{
 
     public void setPatientUser(PatientUser patientUser) {
         this.patientUser = patientUser;
+    }
+
+    public TypeOfData getTypeOfData() {
+        return typeOfData;
+    }
+
+    public void setTypeOfData(TypeOfData typeOfData) {
+        this.typeOfData = typeOfData;
     }
 }
