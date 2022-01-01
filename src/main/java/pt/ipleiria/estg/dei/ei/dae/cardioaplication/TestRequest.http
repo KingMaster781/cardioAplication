@@ -1,6 +1,15 @@
-GET http://localhost:8080/cardioAplication/api/admin/
+GET http://localhost:8080/cardioAplication/api/admin/admin2
 Accept: application/json
+Authorization: Bearer eyJ0eXAiOiJqd3QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbjEiLCJpc3MiOiJxdWlja3N0YXJ0LWp3dC1pc3N1ZXIiLCJhdWQiOiJqd3QtYXVkaWVuY2UiLCJncm91cHMiOlsiQWRtaW4iXSwiZXhwIjoxNjQwOTk0NzgzfQ.DaFjIqu4iiEhboOHKt4HcNga0iEZL7iA8xFDPfiVKc65TfMqfTJvpPbYWmpTH31z6kZBAMQz_D6CB3frN_GrIkX8983oxUvfaoUSInRYyG5KofXRsOedukInS_n61hUglyoCop8xfcGtDlQZ4W6C4ItPvsg62n_78srEHg3BoguQvgydTjQdebcRtyM1nQnfa7bbFrC7IeYTCcBwBNcj1DNHlbGQwlC90Io1DeoAXrMd56NRLLyjo2Az8N6LLhaZpz59NQh2nxADOHBzoVETayWUGKR7om02U4I6bL-EAi80tG3FmpuDQgsqQLI1Bkput1GNL2a8JbpeFOUSQu4uhA
 #####
+POST http://localhost:8080/cardioAplication/api/auth/login
+Content-Type: application/json
+
+{"username": "admin1",
+  "password": "123"
+}
+
+######
 PUT http://localhost:8080/cardioAplication/api/admin/admin1
 Content-Type: application/json
 
@@ -46,7 +55,14 @@ Content-Type: application/json
 POST http://localhost:8080/cardioAplication/api/auth/login
 Content-Type: application/json
 
-{"username": "xavier123",
+{"username": "rafaela123",
+  "password": "123"
+}
+#####
+POST http://localhost:8080/cardioAplication/api/auth/login
+Content-Type: application/json
+
+{"username": "federico.santos",
   "password": "123"
 }
 
@@ -106,9 +122,11 @@ Accept: application/json
 GET http://localhost:8080/cardioAplication/api/prescription-nutris/2
 Accept: application/json
 #####
-GET http://localhost:8080/cardioAplication/api/patientusers/rafaela123/prescription-exercises/
+GET http://localhost:8080/cardioAplication/api/patientusers/rafaela123/prescription-exercises/1
 Accept: application/json
+Authorization: Bearer eyJ0eXAiOiJqd3QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJyYWZhZWxhMTIzIiwiaXNzIjoicXVpY2tzdGFydC1qd3QtaXNzdWVyIiwiYXVkIjoiand0LWF1ZGllbmNlIiwiZ3JvdXBzIjpbIlBhdGllbnRVc2VyIl0sImV4cCI6MTY0MDk5NjYwOX0.WRtupg-OGSDQhm9p2QxEEvtG2pSMbrsTk9aV_W7q8zLxZUosJoodv7XC1LMnm5lZluSZC61hw6ZvnyrO177zK_nB-H5syH-zCfd98Vm-usy21nOLgDtl5ebyKZTNglUoK4eVUnJc7TIEuQpEItyKHjuOXfOun6xN-UZ2X441ihc9BVyFmgi4Ykk9Y6eO8kpeuWZmY5VdThNbupJ648arBqo9nL2DXj1CYN45h0GbSjTZuzJK2q17r69D-_b0DID8PJXTMipKXg9solqFF2ieLektQNB7mlXMKGHI9XnqfRE8sS0q2A2Tf93PC1gDcHxXhOUbMxlcBBPamP4zBs0iHA
 #####
+
 GET http://localhost:8080/cardioAplication/api/patientusers/joaquim123/prescription-exercises/
 Accept: application/json
 #####

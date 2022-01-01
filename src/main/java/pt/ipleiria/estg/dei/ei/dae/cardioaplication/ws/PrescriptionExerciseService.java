@@ -9,6 +9,7 @@ import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityExistsExc
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityNotFoundException;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyIllegalArgumentException;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -55,6 +56,7 @@ public class PrescriptionExerciseService {
 
     @GET
     @Path("{code}")
+    @RolesAllowed({"ProfHealthcare", "PatientUser"})
     public Response getPrescriptionDetails(@PathParam("code") int code) {
         PrescriptionExercise prescription = prescriptionExerciseBean.findPrescriptionExercise(code);
         if (prescription != null)
@@ -64,6 +66,7 @@ public class PrescriptionExerciseService {
 
     @POST
     @Path("/")
+    @RolesAllowed({"ProfHealthcare"})
     public Response create(PrescriptionExerciseDTO prescriptionExerciseDTO) throws MyConstraintViolationException, MyEntityExistsException, MyEntityNotFoundException {
         prescriptionExerciseBean.create(prescriptionExerciseDTO.getCode(),
                 prescriptionExerciseDTO.getDuracao(),
@@ -75,6 +78,7 @@ public class PrescriptionExerciseService {
 
     @DELETE
     @Path("/{code}")
+    @RolesAllowed({"ProfHealthcare"})
     public Response remove(@PathParam("code") int code) throws MyEntityNotFoundException {
         prescriptionExerciseBean.remove(code);
         return Response.status(Response.Status.OK).build();
@@ -82,6 +86,7 @@ public class PrescriptionExerciseService {
 
     @PUT
     @Path("/{code}")
+    @RolesAllowed({"ProfHealthcare"})
     public Response update(@PathParam("code") int code, PrescriptionExerciseDTO prescriptionExerciseDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
         prescriptionExerciseBean.update(code, prescriptionExerciseDTO.getDuracao());
         return Response.status(Response.Status.OK).build();
@@ -89,6 +94,7 @@ public class PrescriptionExerciseService {
 
     @GET
     @Path("/{code}")
+    @RolesAllowed({"ProfHealthcare", "PatientUser"})
     public Response consult(@PathParam("code") int code) {
         PrescriptionExercise prescription = prescriptionExerciseBean.findPrescriptionExercise(code);
         if (prescription != null)
@@ -98,6 +104,7 @@ public class PrescriptionExerciseService {
 
     @PUT
     @Path("/expire/{code}")
+    @RolesAllowed({"ProfHealthcare"})
     public Response expirePrescription(@PathParam("code") int code) throws MyEntityNotFoundException, MyIllegalArgumentException {
         prescriptionExerciseBean.expirePrescription(code);
         return Response.status(Response.Status.OK).build();

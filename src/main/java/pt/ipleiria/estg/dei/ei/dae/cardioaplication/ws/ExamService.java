@@ -10,10 +10,14 @@ import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyConstraintViola
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityNotFoundException;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+import java.security.Principal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,7 +30,9 @@ import java.util.stream.Collectors;
 @Consumes({MediaType.APPLICATION_JSON})
 public class ExamService {
     @EJB
-    ExamBean examBean;
+    private ExamBean examBean;
+    @Context
+    private SecurityContext securityContext;
 
     private ExamDTO toDTO(Exam exam) {
         return new ExamDTO(
@@ -67,6 +73,7 @@ public class ExamService {
 
     @GET
     @Path("{code}")
+    @RolesAllowed({"ProfHealthcare", "PatientUser"})
     public Response getExam(@PathParam("code") int code) {
         Exam exam = examBean.findExam(code);
         if (exam != null)
@@ -78,6 +85,10 @@ public class ExamService {
     @Path("/user/{username}")
     public Response getUserExams(@PathParam("username") String  username) {
         List<Exam> exam = examBean.getAllPatientPrescriptionsExercises(username);
+        Principal principal = securityContext.getUserPrincipal();
+        if(!(securityContext.isUserInRole("ProfHealthcare") || securityContext.isUserInRole("PatientUser") && principal.getName().equals(username))) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
         if (exam != null)
             return Response.ok(toDTOs(exam)).build();
         return Response.status(Response.Status.NOT_FOUND).entity("ERROR_FINDING_EXAM").build();
@@ -85,6 +96,7 @@ public class ExamService {
 
     @POST
     @Path("/")
+    @RolesAllowed({"ProfHealthcare", "PatientUser"})
     public Response create(ExamDTO examDTO) throws MyConstraintViolationException, MyEntityExistsException, MyEntityNotFoundException {
         examBean.create(
                 examDTO.getCode(),

@@ -81,6 +81,10 @@ http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
         <description>ProfHealthcare role</description>
         <role-name>ProfHealthcare</role-name>
     </security-role>
+    <security-role>
+        <description>PatientUser role</description>
+        <role-name>PatientUser</role-name>
+    </security-role>
     <login-config>
         <auth-method>BEARER_TOKEN</auth-method>
         <realm-name>jwt-realm</realm-name>

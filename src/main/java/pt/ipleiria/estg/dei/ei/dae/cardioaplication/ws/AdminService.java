@@ -9,11 +9,15 @@ import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyConstraintViola
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityNotFoundException;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.mail.MessagingException;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,9 +29,12 @@ public class AdminService {
     private AdminBean adminBean;
     @EJB
     private EmailBean emailBean;
+    @Context
+    private SecurityContext securityContext;
 
     @GET
     @Path("/")
+    @RolesAllowed({"Admin"})
     public List<AdminDTO> getAllAdminsWS(){
         return toDTOs(adminBean.getAllAdmins());
     }
@@ -47,6 +54,7 @@ public class AdminService {
 
     @GET
     @Path("{username}")
+    @RolesAllowed({"Admin"})
     public Response getAdminDetail(@PathParam("username") String username)
     {
         Admin admin = adminBean.findAdmin(username);
@@ -59,6 +67,7 @@ public class AdminService {
 
     @POST
     @Path("/")
+    @RolesAllowed({"Admin"})
     public Response create (AdminDTO adminDTO) throws MyConstraintViolationException, MyEntityExistsException {
         adminBean.create(adminDTO.getUsername(), adminDTO.getPassword(), adminDTO.getName(), adminDTO.getEmail());
         return Response.status(Response.Status.OK).build();
@@ -66,6 +75,7 @@ public class AdminService {
 
     @PUT
     @Path("{username}")
+    @RolesAllowed({"Admin"})
     public Response update (@PathParam("username") String username, AdminDTO adminDTO) throws MyConstraintViolationException, MyEntityNotFoundException {
         adminBean.update(username, adminDTO.getPassword(),adminDTO.getName(),adminDTO.getEmail());
         return Response.status(Response.Status.OK).build();
@@ -73,6 +83,7 @@ public class AdminService {
 
     @DELETE
     @Path("{username}")
+    @RolesAllowed({"Admin"})
     public Response remove (@PathParam("username") String username) throws MyEntityNotFoundException {
         adminBean.remove(username);
         return Response.status(Response.Status.OK).build();
@@ -89,6 +100,7 @@ public class AdminService {
 
     @POST
     @Path("/{username}/email/send")
+    @RolesAllowed({"Admin"})
     public Response sendEmail(@PathParam("username") String username, EmailDTO email) throws MyEntityNotFoundException, MessagingException {
         Admin admin = adminBean.findAdmin(username);
         if (admin == null) {

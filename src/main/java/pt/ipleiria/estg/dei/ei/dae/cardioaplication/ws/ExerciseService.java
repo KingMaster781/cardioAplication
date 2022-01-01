@@ -7,6 +7,7 @@ import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyConstraintViola
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityNotFoundException;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -39,6 +40,7 @@ public class ExerciseService {
 
     @GET
     @Path("/")
+    @RolesAllowed({"ProfHealthcare"})
     public List<ExerciseDTO> getAllExercises()
     {
         return toDTOs(exerciseBean.getAllExercise());
@@ -46,6 +48,7 @@ public class ExerciseService {
 
     @GET
     @Path("{code}")
+    @RolesAllowed({"ProfHealthcare"})
     public Response getExerciseDetails(@PathParam("code") int code)
     {
         Exercise exercise = exerciseBean.findExercise(code);
@@ -56,6 +59,7 @@ public class ExerciseService {
 
     @POST
     @Path("/")
+    @RolesAllowed({"ProfHealthcare"})
     public Response create (ExerciseDTO exerciseDTO) throws MyConstraintViolationException, MyEntityExistsException {
         exerciseBean.create(exerciseDTO.getCode(),
                 exerciseDTO.getName(),
@@ -65,6 +69,7 @@ public class ExerciseService {
 
     @DELETE
     @Path("/{code}")
+    @RolesAllowed({"ProfHealthcare"})
     public Response remove (@PathParam("code") int code) throws MyEntityNotFoundException {
         exerciseBean.remove(code);
         return Response.status(Response.Status.OK).build();
@@ -72,6 +77,7 @@ public class ExerciseService {
 
     @PUT
     @Path("/{code}")
+    @RolesAllowed({"ProfHealthcare"})
     public Response update (@PathParam("code") int code, ExerciseDTO exerciseDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
         exerciseBean.update(code, exerciseDTO.getName(), exerciseDTO.getDescExercise());
         return Response.status(Response.Status.OK).build();
@@ -79,6 +85,7 @@ public class ExerciseService {
 
     @GET
     @Path("/{code}")
+    @RolesAllowed({"ProfHealthcare"})
     public Response consult (@PathParam("code") int code){
         Exercise exercise = exerciseBean.findExercise(code);
         if(exercise!=null)

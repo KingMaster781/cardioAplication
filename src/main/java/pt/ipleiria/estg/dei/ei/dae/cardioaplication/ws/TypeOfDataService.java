@@ -9,10 +9,13 @@ import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.PatientUser;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.ProfHealthcare;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.TypeOfData;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +25,8 @@ import java.util.stream.Collectors;
 public class TypeOfDataService {
     @EJB
     private TypeOfDataBean typeOfDataBean;
+    @Context
+    private SecurityContext securityContext;
 
     private TypeOfDataDTO toDTO(TypeOfData typeOfData){
         return new TypeOfDataDTO(
@@ -40,7 +45,8 @@ public class TypeOfDataService {
 
     @GET
     @Path("/")
-    public List<TypeOfDataDTO> getAllPatientWS(){
+    @RolesAllowed({"Admin", "ProfHealthcare", "PatientUser"})
+    public List<TypeOfDataDTO> getAllTypeOfDataWS(){
         return toDTOs(typeOfDataBean.getAllTypesOfData());
     }
 
@@ -48,6 +54,9 @@ public class TypeOfDataService {
     @Path("{code}")
     public Response consult(@PathParam("code") int code) {
         TypeOfData typeData = typeOfDataBean.findTypeOfDate(code);
+        if(!(securityContext.isUserInRole("Admin") || securityContext.isUserInRole("ProfHealthcare") || securityContext.isUserInRole("PatientUser"))){
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
         if (typeData!=null)
         {
             return Response.ok(toDTO(typeData)).build();
@@ -57,7 +66,8 @@ public class TypeOfDataService {
 
     @POST
     @Path("/")
-    public Response createNewStudent (TypeOfDataDTO typeOfDataDTO){
+    @RolesAllowed({"Admin"})
+    public Response create (TypeOfDataDTO typeOfDataDTO){
         typeOfDataBean.create(typeOfDataDTO.getCode(),
                 typeOfDataDTO.getDescType(),
                 typeOfDataDTO.getValorMinimo(),
