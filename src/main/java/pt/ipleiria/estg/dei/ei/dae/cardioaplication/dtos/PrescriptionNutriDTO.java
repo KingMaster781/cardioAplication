@@ -4,6 +4,7 @@ public class PrescriptionNutriDTO {
     private int code;
     private int duracao;
     private String insertionDate;
+    private String oldInsertionDate;
     private String vigor; //alterar entre "Está em vigor" e "Não está em vigor" na camada de serviço
     private String patientUser_username;
     private String descNutri;
@@ -12,13 +13,22 @@ public class PrescriptionNutriDTO {
 
     }
 
-    public PrescriptionNutriDTO(int code, int duracao, String insertionDate, String vigor, String patientUser_username, String descNutri) {
+    public PrescriptionNutriDTO(int code, int duracao, String insertionDate, String oldInsertionDate, String vigor, String patientUser_username, String descNutri) {
         this.code = code;
         this.duracao = duracao;
         this.insertionDate = insertionDate;
+        this.oldInsertionDate = oldInsertionDate;
         this.vigor = vigor;
         this.patientUser_username = patientUser_username;
         this.descNutri = descNutri;
+    }
+
+    public String getOldInsertionDate() {
+        return oldInsertionDate;
+    }
+
+    public void setOldInsertionDate(String oldInsertionDate) {
+        this.oldInsertionDate = oldInsertionDate;
     }
 
     public int getCode() {

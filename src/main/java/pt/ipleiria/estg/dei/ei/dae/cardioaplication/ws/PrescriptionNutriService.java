@@ -43,6 +43,7 @@ public class PrescriptionNutriService {
                 prescription.getCode(),
                 prescription.getDuracao(),
                 convertDatetoString(prescription.getInsertionDate()),
+                convertDatetoString(prescription.getOldInsertionDate()),
                 vigor,
                 prescription.getPatientUser().getUsername(),
                 prescription.getDescNutri()

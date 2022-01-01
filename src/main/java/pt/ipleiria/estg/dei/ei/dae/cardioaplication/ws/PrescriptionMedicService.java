@@ -39,6 +39,7 @@ public class PrescriptionMedicService {
                 prescription.getCode(),
                 prescription.getDuracao(),
                 convertDatetoString(prescription.getInsertionDate()),
+                convertDatetoString(prescription.getOldInsertionDate()),
                 vigor,
                 prescription.getPatientUser().getUsername()
         );

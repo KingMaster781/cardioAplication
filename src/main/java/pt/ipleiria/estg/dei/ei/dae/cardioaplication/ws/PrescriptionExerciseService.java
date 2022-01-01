@@ -38,6 +38,7 @@ public class PrescriptionExerciseService {
                 prescription.getCode(),
                 prescription.getDuracao(),
                 convertDatetoString(prescription.getInsertionDate()),
+                convertDatetoString(prescription.getOldInsertionDate()),
                 vigor,
                 prescription.getProgram().getCode(),
                 prescription.getPatientUser().getUsername()

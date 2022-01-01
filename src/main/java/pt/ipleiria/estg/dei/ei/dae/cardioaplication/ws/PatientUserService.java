@@ -106,6 +106,7 @@ public class PatientUserService {
                 prescription.getCode(),
                 prescription.getDuracao(),
                 convertDatetoString(prescription.getInsertionDate()),
+                convertDatetoString(prescription.getOldInsertionDate()),
                 vigor,
                 prescription.getProgram().getCode(),
                 prescription.getPatientUser().getUsername()
@@ -128,6 +129,7 @@ public class PatientUserService {
                 prescription.getCode(),
                 prescription.getDuracao(),
                 convertDatetoString(prescription.getInsertionDate()),
+                convertDatetoString(prescription.getOldInsertionDate()),
                 vigor,
                 prescription.getPatientUser().getUsername()
         );
@@ -152,6 +154,7 @@ public class PatientUserService {
                 prescription.getCode(),
                 prescription.getDuracao(),
                 convertDatetoString(prescription.getInsertionDate()),
+                convertDatetoString(prescription.getOldInsertionDate()),
                 vigor,
                 prescription.getPatientUser().getUsername(),
                 prescription.getDescNutri()
