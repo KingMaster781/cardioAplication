@@ -42,6 +42,24 @@ public class ProfHealthcareBean {
         return eM.find(ProfHealthcare.class, username);
     }
 
+    public PatientUser getProfHealthcarePatient(String usernameProf, String usernamePatient) throws MyEntityNotFoundException, MyIllegalArgumentException {
+        ProfHealthcare profHealthcare = findProfHeathcare(usernameProf);
+        if(profHealthcare == null)
+        {
+            throw new MyEntityNotFoundException("O profissional de saude "+ usernameProf +" não existe");
+        }
+        PatientUser patientUser = eM.find(PatientUser.class, usernamePatient);
+        if(patientUser == null)
+        {
+            throw new MyEntityNotFoundException("O paciente "+ usernamePatient +" não existe");
+        }
+        if(!profHealthcare.getPatientUserList().contains(patientUser))
+        {
+            throw new MyIllegalArgumentException("O paciente "+ usernamePatient +" não o possui como profissional de saude");
+        }
+        return patientUser;
+    }
+
     public void remove(String username) throws MyEntityNotFoundException {
         ProfHealthcare profHealthcare = findProfHeathcare(username);
         if(profHealthcare == null)

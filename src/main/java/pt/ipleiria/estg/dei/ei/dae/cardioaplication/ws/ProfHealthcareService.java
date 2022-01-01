@@ -91,7 +91,7 @@ public class ProfHealthcareService {
     {
         ProfHealthcare profHealthcare = profHealthcareBean.findProfHeathcare(username);
         Principal principal = securityContext.getUserPrincipal();
-        if(!(securityContext.isUserInRole("Admin") || securityContext.isUserInRole("ProfHealthcare") && principal.getName().equals(username))) {
+        if(!(securityContext.isUserInRole("Admin") || securityContext.isUserInRole("PatientUser") || securityContext.isUserInRole("ProfHealthcare") && principal.getName().equals(username))) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
         if(profHealthcare != null)
@@ -112,6 +112,14 @@ public class ProfHealthcareService {
         return Response.status(Response.Status.NOT_FOUND)
                 .entity("ERROR_FINDING_PROFESSIONAL_HEALTHCARE")
                 .build();
+    }
+
+    @GET
+    @Path("{usernameProf}/patient/{usernamePatient}")
+    @RolesAllowed({"ProfHealthcare"})
+    public Response getProfHealthPatient(@PathParam("usernameProf") String usernameProf, @PathParam("usernamePatient") String usernamePatient) throws MyEntityNotFoundException, MyIllegalArgumentException {
+        PatientUser patientUser = profHealthcareBean.getProfHealthcarePatient(usernameProf, usernamePatient);
+        return Response.ok(patientsToDTO(patientUser)).build();
     }
 
     @POST
@@ -150,22 +158,17 @@ public class ProfHealthcareService {
     }
 
     @POST
-    @Path("/{username}/patients")
+    @Path("/{username}/enroll-patient")
+    @RolesAllowed({"Admin", "ProfHealthcare"})
     public Response enrollPatient (@PathParam("username") String username, PatientUserDTO patientUserDTO) throws MyEntityNotFoundException, MyIllegalArgumentException {
-        if(!(securityContext.isUserInRole("Admin") || securityContext.isUserInRole("ProfHealthcare"))) {
-            return Response.status(Response.Status.FORBIDDEN).build();
-        }
         profHealthcareBean.enrollPatient(patientUserDTO.getUsername(), username);
         return Response.status(Response.Status.OK).build();
     }
 
     @PUT
-    @Path("/{username}/patients/")
+    @Path("/{username}/unroll-patient/")
     @RolesAllowed({"Admin", "ProfHealthcare"})
     public Response unrollPatient (@PathParam("username") String username, PatientUserDTO patientUserDTO) throws MyEntityNotFoundException, MyIllegalArgumentException {
-        if(!(securityContext.isUserInRole("Admin") || securityContext.isUserInRole("ProfHealthcare"))) {
-            return Response.status(Response.Status.FORBIDDEN).build();
-        }
         profHealthcareBean.unrollPatient(patientUserDTO.getUsername(), username);
         return Response.status(Response.Status.OK).build();
     }

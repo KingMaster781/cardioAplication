@@ -41,7 +41,7 @@ public class PatientUserService {
 
     @GET
     @Path("/")
-    @RolesAllowed({"Admin"})
+    @RolesAllowed({"Admin", "ProfHealthcare"})
     public List<PatientUserDTO> getAllPatientWS(){
         return toDTOsnoProfHealthcare(patientUserBean.getAllPatients());
     }

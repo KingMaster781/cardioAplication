@@ -89,6 +89,10 @@ Accept: application/json
 GET http://localhost:8080/cardioAplication/api/exercise
 Accept: application/json
 #####
+GET http://localhost:8080/cardioAplication/api/profhealthcares/federico.santos/patients
+Accept: application/json
+Authorization: Bearer eyJ0eXAiOiJqd3QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmZWRlcmljby5zYW50b3MiLCJpc3MiOiJxdWlja3N0YXJ0LWp3dC1pc3N1ZXIiLCJhdWQiOiJqd3QtYXVkaWVuY2UiLCJncm91cHMiOlsiUHJvZkhlYWx0aGNhcmUiXSwiZXhwIjoxNjQxMDY3NTc4fQ.hFdMOFGM3FkFEE50T2n3gx-BbFYDX2LVd62I7IiX2KEIhsx78Ml4L9nokQXKlEQygTGrJHOwp-ugaF4n3GTJ5ODAgcpYQslRDqtLm5_Brtoc0MJIfsj6sGFAKkH7Ot8wWFyfbktS8kSi6OZKTwXCtm9hgUfLznUAvW3YsBbORFWFjwrhl6_SxW7-0hGRUD6gXkNlnWAdue00NI45F8w9xR6XuNZQ7x-_25xXaPI89NUViLhR_yX66FJh9Zno9JeDtMavUP4bYS_p5cOZ4qBgjtts4uTxgBAXmtC_k5rD3I0RKKJDLP7MxFgq7ZVuJaYoLT-3LmCi95atjvJXEDzODQ
+#####
 GET http://localhost:8080/cardioAplication/api/patientusers/rafaela123/profHealthcares/federico.santos
 Accept: application/json
 #####
@@ -141,4 +145,12 @@ Content-Type: application/json
 
 {"subject" : "Resposta",
   "message" :  "Vamos sim"
+}
+
+#####
+PUT http://localhost:8080/cardioAplication/api/profhealthcares/federico.santos/unroll-patient
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJqd3QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmZWRlcmljby5zYW50b3MiLCJpc3MiOiJxdWlja3N0YXJ0LWp3dC1pc3N1ZXIiLCJhdWQiOiJqd3QtYXVkaWVuY2UiLCJncm91cHMiOlsiUHJvZkhlYWx0aGNhcmUiXSwiZXhwIjoxNjQxMDcxMDM5fQ.gAWib3SMk1OCW9pZDFRjkAEy6aRWEVPZjeVeCAZOu_ZboHeeo6U5ou5pOz5LVugll0MzFaRaESq8vKnQA-Pds2J2gu4gWawYIZm8dcMiEFli0ThaJq1BXfxLYDa2maw0boCDtla3RrH8UcTGv-rrv0cLAWiVk_ON7bEnodcrpWvoOnilJKOOK4TME6aeQYRc-bMD9dqYwVoD6xXjUa6u7F2SmIjn05-tPP6rNBQ9zRL1modRWHLRViIdD6LlMmyNfeVfmu430UkyNcT-V4CD_mqd2we0nhAOquAf5CguFHZoZc8aaQofMk9ecdM6VbEe0SyVbvzRDVZeCohUc9qD7w
+
+{"username" : "joaquim123"
 }
