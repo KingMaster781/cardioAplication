@@ -40,14 +40,13 @@ public class PrescriptionBean {
 
             long daysdiff = Duration.between(localTodayDate.atStartOfDay(), insertionDateLocal.atStartOfDay()).toDays();
 
-            if (daysdiff>=duration)
+            if (-(daysdiff)>=duration)
             {
                 prescription.setVigor(false);
             }
             else
             {
                 int durationToday = duration + (int) daysdiff;
-                System.out.println(durationToday + "=" + duration + " - " + daysdiff);
                 insertionDate=Date.from(localTodayDate.atStartOfDay(defaultZoneId).toInstant());
                 prescription.setDuracao(durationToday);
                 prescription.setInsertionDate(insertionDate);
