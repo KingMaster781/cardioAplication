@@ -1,8 +1,11 @@
 package pt.ipleiria.estg.dei.ei.dae.cardioaplication.ws;
 
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.EmailDTO;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.PatientUserDTO;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.ProfHealthcareDTO;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.EmailBean;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.ProfHealthcareBean;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.Admin;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.PatientUser;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.ProfHealthcare;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyConstraintViolationException;
@@ -10,10 +13,15 @@ import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityExistsExc
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityNotFoundException;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyIllegalArgumentException;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
+import javax.mail.MessagingException;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +31,10 @@ import java.util.stream.Collectors;
 public class ProfHealthcareService {
     @EJB
     private ProfHealthcareBean profHealthcareBean;
+    @EJB
+    private EmailBean emailBean;
+    @Context
+    private SecurityContext securityContext;
 
     @GET
     @Path("/")
@@ -78,6 +90,10 @@ public class ProfHealthcareService {
     public Response getProfHealthcareDetail(@PathParam("username") String username)
     {
         ProfHealthcare profHealthcare = profHealthcareBean.findProfHeathcare(username);
+        Principal principal = securityContext.getUserPrincipal();
+        if(!(securityContext.isUserInRole("Admin") || securityContext.isUserInRole("PatientUser") || securityContext.isUserInRole("ProfHealthcare") && principal.getName().equals(username))) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
         if(profHealthcare != null)
             return Response.ok(toDTO(profHealthcare)).build();
         return Response.status(Response.Status.NOT_FOUND).entity("ERROR_FINDING_PROFHEALTHCARE").build();
@@ -85,6 +101,7 @@ public class ProfHealthcareService {
 
     @GET
     @Path("{username}/patients")
+    @RolesAllowed({"Admin", "ProfHealthcare"})
     public Response getProfHealthPatients(@PathParam("username") String username) {
         ProfHealthcare profHealthcare = profHealthcareBean.findProfHeathcare(username);
         if(profHealthcare != null)
@@ -97,8 +114,17 @@ public class ProfHealthcareService {
                 .build();
     }
 
+    @GET
+    @Path("{usernameProf}/patient/{usernamePatient}")
+    @RolesAllowed({"ProfHealthcare"})
+    public Response getProfHealthPatient(@PathParam("usernameProf") String usernameProf, @PathParam("usernamePatient") String usernamePatient) throws MyEntityNotFoundException, MyIllegalArgumentException {
+        PatientUser patientUser = profHealthcareBean.getProfHealthcarePatient(usernameProf, usernamePatient);
+        return Response.ok(patientsToDTO(patientUser)).build();
+    }
+
     @POST
     @Path("/")
+    @RolesAllowed({"Admin"})
     public Response create(ProfHealthcareDTO profHealthcareDTO) throws MyConstraintViolationException, MyEntityExistsException {
         profHealthcareBean.create(profHealthcareDTO.getUsername(), profHealthcareDTO.getPassword(), profHealthcareDTO.getName(), profHealthcareDTO.getEmail());
         return  Response.status(Response.Status.OK).build();
@@ -106,6 +132,7 @@ public class ProfHealthcareService {
 
     @PUT
     @Path("{username}")
+    @RolesAllowed({"Admin"})
     public Response update (@PathParam("username") String username, ProfHealthcareDTO profHealthcareDTO) throws MyConstraintViolationException, MyEntityExistsException {
         profHealthcareBean.update(username, profHealthcareDTO.getPassword(), profHealthcareDTO.getName(), profHealthcareDTO.getEmail());
         return Response.status(Response.Status.OK).build();
@@ -113,6 +140,7 @@ public class ProfHealthcareService {
 
     @DELETE
     @Path("{username}")
+    @RolesAllowed({"Admin"})
     public Response remove (@PathParam("username") String username) throws MyEntityNotFoundException {
         profHealthcareBean.remove(username);
         return Response.status(Response.Status.OK).build();
@@ -120,6 +148,7 @@ public class ProfHealthcareService {
 
     @GET
     @Path("/{username}")
+    @RolesAllowed({"Admin"})
     public Response consult (@PathParam("username") String username)
     {
         ProfHealthcare profHealthcare = profHealthcareBean.findProfHeathcare(username);
@@ -129,16 +158,29 @@ public class ProfHealthcareService {
     }
 
     @POST
-    @Path("/{username}/patients")
+    @Path("/{username}/enroll-patient")
+    @RolesAllowed({"Admin", "ProfHealthcare"})
     public Response enrollPatient (@PathParam("username") String username, PatientUserDTO patientUserDTO) throws MyEntityNotFoundException, MyIllegalArgumentException {
         profHealthcareBean.enrollPatient(patientUserDTO.getUsername(), username);
         return Response.status(Response.Status.OK).build();
     }
 
     @PUT
-    @Path("/{username}/patients/")
+    @Path("/{username}/unroll-patient/")
+    @RolesAllowed({"Admin", "ProfHealthcare"})
     public Response unrollPatient (@PathParam("username") String username, PatientUserDTO patientUserDTO) throws MyEntityNotFoundException, MyIllegalArgumentException {
         profHealthcareBean.unrollPatient(patientUserDTO.getUsername(), username);
         return Response.status(Response.Status.OK).build();
+    }
+
+    @POST
+    @Path("/{username}/email/send")
+    public Response sendEmail(@PathParam("username") String username, EmailDTO email) throws MyEntityNotFoundException, MessagingException {
+        ProfHealthcare profHealthcare = profHealthcareBean.findProfHeathcare(username);
+        if (profHealthcare == null) {
+            throw new MyEntityNotFoundException("Um profissional de saude com o username '" + username + "' não foi encontrado nos registos.");
+        }
+        emailBean.send(profHealthcare.getEmail(), email.getSubject(), email.getMessage());
+        return Response.status(Response.Status.OK).entity("Email Enviado").build();
     }
 }

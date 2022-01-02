@@ -1,19 +1,22 @@
 package pt.ipleiria.estg.dei.ei.dae.cardioaplication.ws;
 
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.*;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.PatientUserBean;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.PrescriptionExerciseBean;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.PrescriptionMedicBean;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.PrescriptionNutriBean;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.*;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.*;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityNotFoundException;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
+import javax.mail.MessagingException;
+import javax.mail.Transport;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -31,10 +34,14 @@ public class PatientUserService {
     private PrescriptionMedicBean prescriptionMedicBean;
     @EJB
     private PrescriptionNutriBean prescriptionNutriBean;
+    @EJB
+    private EmailBean emailBean;
+    @Context
+    private SecurityContext securityContext;
 
     @GET
     @Path("/")
-    //@RolesAllowed({"Admin, PatientUser"})
+    @RolesAllowed({"Admin", "ProfHealthcare"})
     public List<PatientUserDTO> getAllPatientWS(){
         return toDTOsnoProfHealthcare(patientUserBean.getAllPatients());
     }
@@ -99,6 +106,7 @@ public class PatientUserService {
                 prescription.getCode(),
                 prescription.getDuracao(),
                 convertDatetoString(prescription.getInsertionDate()),
+                convertDatetoString(prescription.getOldInsertionDate()),
                 vigor,
                 prescription.getProgram().getCode(),
                 prescription.getPatientUser().getUsername()
@@ -121,6 +129,7 @@ public class PatientUserService {
                 prescription.getCode(),
                 prescription.getDuracao(),
                 convertDatetoString(prescription.getInsertionDate()),
+                convertDatetoString(prescription.getOldInsertionDate()),
                 vigor,
                 prescription.getPatientUser().getUsername()
         );
@@ -145,6 +154,7 @@ public class PatientUserService {
                 prescription.getCode(),
                 prescription.getDuracao(),
                 convertDatetoString(prescription.getInsertionDate()),
+                convertDatetoString(prescription.getOldInsertionDate()),
                 vigor,
                 prescription.getPatientUser().getUsername(),
                 prescription.getDescNutri()
@@ -179,6 +189,10 @@ public class PatientUserService {
     public Response getPatientDetail(@PathParam("username") String username)
     {
         PatientUser patientUser = patientUserBean.findPatient(username);
+        Principal principal = securityContext.getUserPrincipal();
+        if(!(securityContext.isUserInRole("Admin") || securityContext.isUserInRole("ProfHealthcare") || securityContext.isUserInRole("PatientUser") && principal.getName().equals(username))) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
         if (patientUser != null)
             return Response.ok(toDTO(patientUser)).build();
         return Response.status(Response.Status.NOT_FOUND).entity("ERROR_FINDING_PATIENT").build();
@@ -186,9 +200,12 @@ public class PatientUserService {
 
     @GET
     @Path("{username}/profHealthcares")
-    //@RolesAllowed({"Admin, PatientUser"})
     public Response getPatientProfHealthcares(@PathParam("username") String username) {
         PatientUser patientUser = patientUserBean.findPatient(username);
+        Principal principal = securityContext.getUserPrincipal();
+        if(!(securityContext.isUserInRole("Admin") || securityContext.isUserInRole("ProfHealthcare") || securityContext.isUserInRole("PatientUser") && principal.getName().equals(username))) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
         if(patientUser!=null)
         {
             List<ProfHealthcareDTO> dtos = profHealthcaretoDTOs(patientUser.getProfHealthcare());
@@ -199,9 +216,12 @@ public class PatientUserService {
 
     @GET
     @Path("{username}/prescription-exercises")
-    //@RolesAllowed({"Admin, PatientUser"})
     public Response getPatientPrescriptionExercises(@PathParam("username") String username) {
         PatientUser patientUser = patientUserBean.findPatient(username);
+        Principal principal = securityContext.getUserPrincipal();
+        if(!(securityContext.isUserInRole("ProfHealthcare") || securityContext.isUserInRole("PatientUser") && principal.getName().equals(username))) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
         if(patientUser!=null)
         {
             List<PrescriptionExerciseDTO> dtos = prescriptionExerciseDTOS(patientUser.getPrescriptionExercises());
@@ -212,9 +232,12 @@ public class PatientUserService {
 
     @GET
     @Path("{username}/prescription-medics")
-    //@RolesAllowed({"Admin, PatientUser"})
     public Response getPatientPrescriptionMedics(@PathParam("username") String username) {
         PatientUser patientUser = patientUserBean.findPatient(username);
+        Principal principal = securityContext.getUserPrincipal();
+        if(!(securityContext.isUserInRole("ProfHealthcare") || securityContext.isUserInRole("PatientUser") && principal.getName().equals(username))) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
         if(patientUser!=null)
         {
             List<PrescriptionMedicDTO> dtos = prescriptionMedicDTOS(patientUser.getPrescriptionMedics());
@@ -225,9 +248,12 @@ public class PatientUserService {
 
     @GET
     @Path("{username}/prescription-nutris")
-    //@RolesAllowed({"Admin, PatientUser"})
     public Response getPatientPrescriptionNutris(@PathParam("username") String username) {
         PatientUser patientUser = patientUserBean.findPatient(username);
+        Principal principal = securityContext.getUserPrincipal();
+        if(!(securityContext.isUserInRole("ProfHealthcare") || securityContext.isUserInRole("PatientUser") && principal.getName().equals(username))) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
         if(patientUser!=null)
         {
             List<PrescriptionNutriDTO> dtos = prescriptionNutriDTOS(patientUser.getPrescriptionNutris());
@@ -238,32 +264,41 @@ public class PatientUserService {
 
     @POST
     @Path("/")
-    //@RolesAllowed({"Admin"})
     public Response create(PatientUserDTO patientUserDTO) throws MyConstraintViolationException, MyEntityExistsException {
+        if(!(securityContext.isUserInRole("ProfHealthcare"))) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
         patientUserBean.create(patientUserDTO.getUsername(), patientUserDTO.getPassword(), patientUserDTO.getName(), patientUserDTO.getEmail());
         return Response.status(Response.Status.OK).build();
     }
     @PUT
     @Path("{username}")
-   // @RolesAllowed({"Admin, PatientUser"})
     public Response update (@PathParam("username") String username, PatientUserDTO patientUserDTO) throws MyConstraintViolationException, MyEntityNotFoundException {
+        if(!(securityContext.isUserInRole("Admin") || securityContext.isUserInRole("ProfHealthcare"))) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
         patientUserBean.update(username, patientUserDTO.getPassword(), patientUserDTO.getName(), patientUserDTO.getEmail());
         return Response.status(Response.Status.OK).build();
     }
 
     @DELETE
     @Path("{username}")
-    //@RolesAllowed({"Admin"})
     public Response remove (@PathParam("username") String username) throws MyEntityNotFoundException {
+        if(!(securityContext.isUserInRole("Admin") || securityContext.isUserInRole("ProfHealthcare"))) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
         patientUserBean.remove(username);
         return Response.status(Response.Status.OK).build();
     }
     @GET
     @Path("/{username}")
-    //@RolesAllowed({"Admin"})
     public Response consult (@PathParam("username") String username)
     {
         PatientUser patientUser = patientUserBean.findPatient(username);
+        Principal principal = securityContext.getUserPrincipal();
+        if(!(securityContext.isUserInRole("Admin") || securityContext.isUserInRole("ProfHealthcare") || securityContext.isUserInRole("PatientUser") && principal.getName().equals(username))) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
         if(patientUser == null)
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         return Response.status(Response.Status.OK).entity(toDTO(patientUser)).build();
@@ -273,6 +308,10 @@ public class PatientUserService {
     @Path("{username}/prescription-exercises/{code}")
     public Response consultPrescriptionsExercises(@PathParam("username") String username,@PathParam("code") int code) {
         List<PrescriptionExercise> prescriptionExercises = prescriptionExerciseBean.getAllPatientPrescriptionsExercisesCode(username, code);
+        Principal principal = securityContext.getUserPrincipal();
+        if(!(securityContext.isUserInRole("ProfHealthcare") || securityContext.isUserInRole("PatientUser") && principal.getName().equals(username))) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
         if (prescriptionExercises.size()>0)
         {
             return Response.ok(prescriptionExerciseDTOS(prescriptionExercises)).build();
@@ -282,8 +321,13 @@ public class PatientUserService {
 
     @GET
     @Path("{username}/prescription-medics/{code}")
+    @RolesAllowed({"ProfHealthcare, PatientUser"})
     public Response consultPrescriptionsMedic(@PathParam("username") String username,@PathParam("code") int code) {
         List<PrescriptionMedic> prescriptionMedics = prescriptionMedicBean.getAllPatientMedicPrescriptionsCode(username, code);
+        Principal principal = securityContext.getUserPrincipal();
+        if(!(securityContext.isUserInRole("ProfHealthcare") || securityContext.isUserInRole("PatientUser") && principal.getName().equals(username))) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
         if (prescriptionMedics.size()>0)
         {
             return Response.ok(prescriptionMedicDTOS(prescriptionMedics)).build();
@@ -295,10 +339,25 @@ public class PatientUserService {
     @Path("{username}/prescription-nutris/{code}")
     public Response consultPrescriptionsNutri(@PathParam("username") String username,@PathParam("code") int code) {
         List<PrescriptionNutri> prescriptionNutris = prescriptionNutriBean.getAllPatientNutriPrescriptionsCode(username, code);
+        Principal principal = securityContext.getUserPrincipal();
+        if(!(securityContext.isUserInRole("ProfHealthcare") || securityContext.isUserInRole("PatientUser") && principal.getName().equals(username))) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
         if (prescriptionNutris.size()>0)
         {
             return Response.ok(prescriptionNutriDTOS(prescriptionNutris)).build();
         }
         return Response.status(Response.Status.NOT_FOUND).entity("Não possui nenhuma prescrição com esse código").build();
+    }
+
+    @POST
+    @Path("/{username}/email/send")
+    public Response sendEmail(@PathParam("username") String username, EmailDTO email) throws MyEntityNotFoundException, MessagingException {
+        PatientUser patientUser = patientUserBean.findPatient(username);
+        if (patientUser == null) {
+            throw new MyEntityNotFoundException("Um paciente com o username '" + username + "' não foi encontrado nos registos.");
+        }
+        emailBean.send(patientUser.getEmail(), email.getSubject(), email.getMessage());
+        return Response.status(Response.Status.OK).entity("Email Enviado").build();
     }
 }

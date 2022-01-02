@@ -14,6 +14,7 @@ import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityExistsExc
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityNotFoundException;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyIllegalArgumentException;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -42,6 +43,7 @@ public class PrescriptionNutriService {
                 prescription.getCode(),
                 prescription.getDuracao(),
                 convertDatetoString(prescription.getInsertionDate()),
+                convertDatetoString(prescription.getOldInsertionDate()),
                 vigor,
                 prescription.getPatientUser().getUsername(),
                 prescription.getDescNutri()
@@ -60,6 +62,7 @@ public class PrescriptionNutriService {
 
     @GET
     @Path("{code}")
+    @RolesAllowed({"ProfHealthcare", "PatientUser"})
     public Response getPrescriptionDetails(@PathParam("code") int code) {
         PrescriptionNutri prescription = prescriptionNutriBean.findPrescriptionNutri(code);
         if (prescription != null)
@@ -69,6 +72,7 @@ public class PrescriptionNutriService {
 
     @POST
     @Path("/")
+    @RolesAllowed({"ProfHealthcare"})
     public Response create(PrescriptionNutriDTO prescriptionNutriDTO) throws MyConstraintViolationException, MyEntityExistsException, MyEntityNotFoundException {
         prescriptionNutriBean.create(prescriptionNutriDTO.getCode(),
                 prescriptionNutriDTO.getDuracao(),
@@ -80,6 +84,7 @@ public class PrescriptionNutriService {
 
     @DELETE
     @Path("/{code}")
+    @RolesAllowed({"ProfHealthcare"})
     public Response remove(@PathParam("code") int code) throws MyEntityNotFoundException {
         prescriptionNutriBean.remove(code);
         return Response.status(Response.Status.OK).build();
@@ -87,6 +92,7 @@ public class PrescriptionNutriService {
 
     @PUT
     @Path("/{code}")
+    @RolesAllowed({"ProfHealthcare"})
     public Response update(@PathParam("code") int code, PrescriptionNutriDTO prescriptionNutriDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
         prescriptionNutriBean.update(code, prescriptionNutriDTO.getDuracao(), prescriptionNutriDTO.getDescNutri());
         return Response.status(Response.Status.OK).build();
@@ -94,6 +100,7 @@ public class PrescriptionNutriService {
 
     @GET
     @Path("/{code}")
+    @RolesAllowed({"ProfHealthcare", "PatientUser"})
     public Response consult(@PathParam("code") int code) {
         PrescriptionNutri prescription = prescriptionNutriBean.findPrescriptionNutri(code);
         if (prescription != null)
@@ -103,6 +110,7 @@ public class PrescriptionNutriService {
 
     @PUT
     @Path("/expire/{code}")
+    @RolesAllowed({"ProfHealthcare"})
     public Response expirePrescription(@PathParam("code") int code) throws MyEntityNotFoundException, MyIllegalArgumentException {
         prescriptionNutriBean.expirePrescription(code);
         return Response.status(Response.Status.OK).build();

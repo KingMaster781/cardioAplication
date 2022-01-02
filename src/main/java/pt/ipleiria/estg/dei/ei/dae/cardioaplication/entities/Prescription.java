@@ -23,6 +23,7 @@ public class Prescription {
     private int duracao;
     @NotNull
     private Date insertionDate;
+    private Date oldInsertionDate;
     private boolean isVigor;
 
     public Prescription() {
@@ -33,6 +34,7 @@ public class Prescription {
         this.code = code;
         this.duracao = duracao;
         this.insertionDate = insertionDate;
+        oldInsertionDate=insertionDate;
         isVigor = true;
     }
 
@@ -66,5 +68,13 @@ public class Prescription {
 
     public void setVigor(boolean vigor) {
         isVigor = vigor;
+    }
+
+    public Date getOldInsertionDate() {
+        return oldInsertionDate;
+    }
+
+    public void setOldInsertionDate(Date oldInsertionDate) {
+        this.oldInsertionDate = oldInsertionDate;
     }
 }

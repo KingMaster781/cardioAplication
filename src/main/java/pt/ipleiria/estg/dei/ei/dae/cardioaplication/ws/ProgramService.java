@@ -10,6 +10,7 @@ import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityExistsExc
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityNotFoundException;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyIllegalArgumentException;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -57,6 +58,7 @@ public class ProgramService {
 
     @GET
     @Path("/")
+    @RolesAllowed({"ProfHealthcare"})
     public List<ProgramDTO> getAllPrograms()
     {
         return toDTOs(programBean.getAllPrograms());
@@ -64,6 +66,7 @@ public class ProgramService {
 
     @GET
     @Path("{code}")
+    @RolesAllowed({"ProfHealthcare", "PatientUser"})
     public Response getProgramDetails(@PathParam("code") int code)
     {
         Program program = programBean.findProgram(code);
@@ -74,7 +77,7 @@ public class ProgramService {
 
     @GET
     @Path("{code}/exercises")
-    //@RolesAllowed({"Admin, PatientUser"})
+    @RolesAllowed({"ProfHealthcare", "PatientUser"})
     public Response getProgramExercises(@PathParam("code") int code) {
         Program program = programBean.findProgram(code);
         if(program!=null)
@@ -87,6 +90,7 @@ public class ProgramService {
 
     @POST
     @Path("/")
+    @RolesAllowed({"ProfHealthcare"})
     public Response create (ProgramDTO programDTO) throws MyConstraintViolationException, MyEntityExistsException {
         programBean.create(programDTO.getCode(),
                 programDTO.getName(),
@@ -96,6 +100,7 @@ public class ProgramService {
 
     @DELETE
     @Path("/{code}")
+    @RolesAllowed({"ProfHealthcare"})
     public Response remove (@PathParam("code") int code) throws MyEntityNotFoundException {
         programBean.remove(code);
         return Response.status(Response.Status.OK).build();
@@ -103,6 +108,7 @@ public class ProgramService {
 
     @PUT
     @Path("/{code}")
+    @RolesAllowed({"ProfHealthcare"})
     public Response update (@PathParam("code") int code, ProgramDTO programDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
         programBean.update(code, programDTO.getName(), programDTO.getDescProgram());
         return Response.status(Response.Status.OK).build();
@@ -110,6 +116,7 @@ public class ProgramService {
 
     @GET
     @Path("{code}")
+    @RolesAllowed({"ProfHealthcare", "PatientUser"})
     public Response consult(@PathParam("code") int code)
     {
         Program program = programBean.findProgram(code);
@@ -120,6 +127,7 @@ public class ProgramService {
 
     @POST
     @Path("/{code}/exercises")
+    @RolesAllowed({"ProfHealthcare"})
     public Response enrollExercise (@PathParam("code") int code, ExerciseDTO exerciseDTO) throws MyEntityNotFoundException, MyIllegalArgumentException {
         programBean.enrollExercise(code, exerciseDTO.getCode());
         return Response.status(Response.Status.OK).build();
@@ -127,6 +135,7 @@ public class ProgramService {
 
     @PUT
     @Path("/{code}/exercises")
+    @RolesAllowed({"ProfHealthcare"})
     public Response unrollExercise (@PathParam("code") int code, ExerciseDTO exerciseDTO) throws MyEntityNotFoundException, MyIllegalArgumentException {
         programBean.unrollExercise(code, exerciseDTO.getCode());
         return Response.status(Response.Status.OK).build();
