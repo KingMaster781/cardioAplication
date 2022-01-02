@@ -84,7 +84,7 @@ public class ExamService {
     @GET
     @Path("/user/{username}")
     public Response getUserExams(@PathParam("username") String  username) {
-        List<Exam> exam = examBean.getAllPatientPrescriptionsExercises(username);
+        List<Exam> exam = examBean.getAllPatientExams(username);
         Principal principal = securityContext.getUserPrincipal();
         if(!(securityContext.isUserInRole("ProfHealthcare") || securityContext.isUserInRole("PatientUser") && principal.getName().equals(username))) {
             return Response.status(Response.Status.FORBIDDEN).build();
