@@ -63,7 +63,7 @@ public class DataService {
     @PUT
     @Path("/{code}")
     public Response update(@PathParam("code") int code, DataDTO dataDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
-        dataBean.update(code, dataDTO.getValue());
+        dataBean.update(code, dataDTO.getDescriData(), dataDTO.getValue());
         return Response.status(Response.Status.OK).build();
     }
 

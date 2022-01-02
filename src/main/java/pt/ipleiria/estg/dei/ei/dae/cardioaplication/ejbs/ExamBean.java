@@ -49,7 +49,7 @@ public class ExamBean {
         }
     }
 
-    public List<Exam> getAllPatientPrescriptionsExercises(String patientUser_username){
+    public List<Exam> getAllPatientExams(String patientUser_username){
         return eM.createNamedQuery("getAllPatientExam", Exam.class).setParameter("username", patientUser_username).getResultList();
     }
 
