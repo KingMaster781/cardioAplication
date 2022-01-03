@@ -13,6 +13,8 @@ import javax.validation.ConstraintViolationException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -57,7 +59,7 @@ public class PrescriptionNutriBean {
         return eM.createNamedQuery("getPatientPrescriptionsNutriCode", PrescriptionNutri.class).setParameter("username", patientUser_username).setParameter("code", code).getResultList();
     }
 
-    public void update(int code, int duracao, String descNutri) throws MyEntityNotFoundException, MyConstraintViolationException {
+    public void update(int code, int duracao) throws MyEntityNotFoundException, MyConstraintViolationException {
         PrescriptionNutri prescription = findPrescriptionNutri(code);
         if(prescription == null)
         {
@@ -66,7 +68,8 @@ public class PrescriptionNutriBean {
         try
         {
             prescription.setDuracao(duracao);
-            prescription.setDescNutri(descNutri);
+            prescription.setInsertionDate(todayDate());
+            prescription.setOldInsertionDate(todayDate());
         }
         catch (ConstraintViolationException e)
         {
@@ -113,5 +116,13 @@ public class PrescriptionNutriBean {
             e.printStackTrace();
         }
         return data;
+    }
+
+    private Date todayDate()
+    {
+        LocalDate localTodayDate = LocalDate.now();
+        ZoneId defaultZoneId = ZoneId.systemDefault();
+        Date todayDate = Date.from(localTodayDate.atStartOfDay(defaultZoneId).toInstant());;
+        return todayDate;
     }
 }

@@ -8,6 +8,9 @@ import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.Data;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.PatientUser;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.ProfHealthcare;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.TypeOfData;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyConstraintViolationException;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityExistsException;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityNotFoundException;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -82,4 +85,23 @@ public class TypeOfDataService {
                 .entity(toDTO(typeOfData))
                 .build();
     }
+
+    @PUT
+    @Path("{code}")
+    public Response update(@PathParam("code") int code, TypeOfDataDTO typeOfDataDTO) throws MyConstraintViolationException, MyEntityExistsException {
+        TypeOfData typeData = typeOfDataBean.update(code, typeOfDataDTO.getDescType(), typeOfDataDTO.getValorMinimo(), typeOfDataDTO.getValorMaximo(), typeOfDataDTO.getUnidadeValorQuantitativo());
+        if (typeData!=null)
+        {
+            return Response.ok(toDTO(typeData)).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).entity("Tipo de dados pedido não existe").build();
+    }
+
+    @DELETE
+    @Path("{code}")
+    public Response remove (@PathParam("code") int code) throws MyEntityNotFoundException {
+        typeOfDataBean.remove(code);
+        return Response.status(Response.Status.OK).build();
+    }
+
 }

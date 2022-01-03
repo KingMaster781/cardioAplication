@@ -10,7 +10,6 @@ import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityNotFoundE
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.mail.MessagingException;
-import javax.mail.Transport;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -176,6 +175,20 @@ public class PatientUserService {
 
     private List<MedicineDTO> medicineDTOS(List<Medicine> medicines) {
         return medicines.stream().map(this::medicineDTO).collect(Collectors.toList());
+    }
+
+    private EmailDTO emailtoDTO(MessageUser messageUser){
+        return new EmailDTO(
+                messageUser.getCode(),
+                messageUser.getUserTo(),
+                messageUser.getUserFrom(),
+                messageUser.getSubject(),
+                messageUser.getMessage()
+        );
+    }
+
+    private List<EmailDTO> emailDTOS(List<MessageUser> messageUserList){
+        return messageUserList.stream().map(this::emailtoDTO).collect(Collectors.toList());
     }
 
     private String convertDatetoString(Date data)
@@ -357,7 +370,41 @@ public class PatientUserService {
         if (patientUser == null) {
             throw new MyEntityNotFoundException("Um paciente com o username '" + username + "' não foi encontrado nos registos.");
         }
+        emailBean.ReceiveMessage(email.getUserFrom(), email.getUserTo(), email.getSubject(), email.getMessage());
         emailBean.send(patientUser.getEmail(), email.getSubject(), email.getMessage());
         return Response.status(Response.Status.OK).entity("Email Enviado").build();
+    }
+
+    @GET
+    @Path("/{username}/email/receive")
+    public Response getEmails(@PathParam("username") String username) throws MyEntityNotFoundException, MessagingException {
+        PatientUser patientUser = patientUserBean.findPatient(username);
+        if (patientUser == null) {
+            throw new MyEntityNotFoundException("Um paciente com o username '" + username + "' não foi encontrado nos registos.");
+        }
+        List<EmailDTO> dtos = emailDTOS(emailBean.getAllMessageUser(patientUser.getUsername()));
+        return Response.ok(dtos).build();
+    }
+
+    @GET
+    @Path("/{username}/email/receive/{code}")
+    public Response getEmail(@PathParam("username") String username, @PathParam("code") long code) throws MyEntityNotFoundException, MessagingException {
+        PatientUser patientUser = patientUserBean.findPatient(username);
+        if (patientUser == null) {
+            throw new MyEntityNotFoundException("Um paciente com o username '" + username + "' não foi encontrado nos registos.");
+        }
+        EmailDTO dto = emailtoDTO(emailBean.findMessage(code));
+        return Response.ok(dto).build();
+    }
+
+    @DELETE
+    @Path("/{username}/email/delete/{code}")
+    public Response deleteEmails(@PathParam("username") String username, @PathParam("code") long code) throws MyEntityNotFoundException, MessagingException {
+        PatientUser patientUser = patientUserBean.findPatient(username);
+        if (patientUser == null) {
+            throw new MyEntityNotFoundException("Um paciente com o username '" + username + "' não foi encontrado nos registos.");
+        }
+        emailBean.removeMessage(code);
+        return Response.status(Response.Status.OK).entity("Email Removido").build();
     }
 }

@@ -94,7 +94,7 @@ public class PrescriptionNutriService {
     @Path("/{code}")
     @RolesAllowed({"ProfHealthcare"})
     public Response update(@PathParam("code") int code, PrescriptionNutriDTO prescriptionNutriDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
-        prescriptionNutriBean.update(code, prescriptionNutriDTO.getDuracao(), prescriptionNutriDTO.getDescNutri());
+        prescriptionNutriBean.update(code, prescriptionNutriDTO.getDuracao());
         return Response.status(Response.Status.OK).build();
     }
 

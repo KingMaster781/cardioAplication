@@ -13,6 +13,8 @@ import javax.validation.ConstraintViolationException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -66,6 +68,8 @@ public class PrescriptionMedicBean {
         try
         {
             prescription.setDuracao(duracao);
+            prescription.setInsertionDate(todayDate());
+            prescription.setOldInsertionDate(todayDate());
         }
         catch (ConstraintViolationException e)
         {
@@ -153,5 +157,13 @@ public class PrescriptionMedicBean {
         }
         prescription.removeMedicine(medicine);
         medicine.removeMedicPrescription(prescription);
+    }
+
+    private Date todayDate()
+    {
+        LocalDate localTodayDate = LocalDate.now();
+        ZoneId defaultZoneId = ZoneId.systemDefault();
+        Date todayDate = Date.from(localTodayDate.atStartOfDay(defaultZoneId).toInstant());;
+        return todayDate;
     }
 }

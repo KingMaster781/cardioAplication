@@ -5,7 +5,7 @@ import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.PatientUserDTO;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.ProfHealthcareDTO;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.EmailBean;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.ProfHealthcareBean;
-import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.Admin;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.MessageUser;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.PatientUser;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.ProfHealthcare;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyConstraintViolationException;
@@ -83,6 +83,20 @@ public class ProfHealthcareService {
     private List<PatientUserDTO> patientsToDTOs(List<PatientUser> patientUsers)
     {
         return patientUsers.stream().map(this::patientsToDTO).collect(Collectors.toList());
+    }
+
+    private EmailDTO emailtoDTO(MessageUser messageUser){
+        return new EmailDTO(
+                messageUser.getCode(),
+                messageUser.getUserTo(),
+                messageUser.getUserFrom(),
+                messageUser.getSubject(),
+                messageUser.getMessage()
+        );
+    }
+
+    private List<EmailDTO> emailtoDTOS(List<MessageUser> messageUserList){
+        return messageUserList.stream().map(this::emailtoDTO).collect(Collectors.toList());
     }
 
     @GET
@@ -181,6 +195,41 @@ public class ProfHealthcareService {
             throw new MyEntityNotFoundException("Um profissional de saude com o username '" + username + "' não foi encontrado nos registos.");
         }
         emailBean.send(profHealthcare.getEmail(), email.getSubject(), email.getMessage());
+        emailBean.ReceiveMessage(email.getUserFrom(), email.getUserTo(), email.getSubject(), email.getMessage());
         return Response.status(Response.Status.OK).entity("Email Enviado").build();
     }
-}
+
+    @GET
+    @Path("/{username}/email/receive")
+    public Response getEmails(@PathParam("username") String username) throws MyEntityNotFoundException{
+        ProfHealthcare profHealthcare = profHealthcareBean.findProfHeathcare(username);
+        if (profHealthcare != null) {
+            List<EmailDTO> dtos = emailtoDTOS(emailBean.getAllMessageUser(username));
+            return Response.ok(dtos).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND)
+                .entity("ERROR_FINDING_PROFESSIONAL_HEALTHCARE")
+                .build();
+    }
+
+    @GET
+    @Path("/{username}/email/receive/{code}")
+    public Response getEmail(@PathParam("username") String username, @PathParam("code") long code) throws MyEntityNotFoundException, MessagingException {
+        ProfHealthcare profHealthcare = profHealthcareBean.findProfHeathcare(username);
+        if (profHealthcare == null) {
+            throw new MyEntityNotFoundException("Um profissional de saude com o username '" + username + "' não foi encontrado nos registos.");
+        }
+        EmailDTO dto = emailtoDTO(emailBean.findMessage(code));
+        return Response.ok(dto).build();
+    }
+
+    @DELETE
+    @Path("/{username}/email/delete/{code}")
+    public Response deleteEmails(@PathParam("username") String username, @PathParam("code") long code) throws MyEntityNotFoundException {
+        ProfHealthcare profHealthcare = profHealthcareBean.findProfHeathcare(username);
+        if (profHealthcare == null) {
+            throw new MyEntityNotFoundException("Um profissional de saude com o username '" + username + "' não foi encontrado nos registos.");
+        }
+        emailBean.removeMessage(code);
+        return Response.status(Response.Status.OK).entity("Email Removido").build();
+    }}
