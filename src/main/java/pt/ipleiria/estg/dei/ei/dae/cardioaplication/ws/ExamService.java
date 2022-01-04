@@ -77,7 +77,7 @@ public class ExamService {
     @GET
     @Path("/user/{username}")
     public Response getUserExams(@PathParam("username") String  username) {
-        List<Exam> exam = examBean.getAllPatientPrescriptionsExercises(username);
+        List<Exam> exam = examBean.getAllPatientExams(username);
         if (exam != null)
             return Response.ok(toDTOs(exam)).build();
         return Response.status(Response.Status.NOT_FOUND).entity("ERROR_FINDING_EXAM").build();

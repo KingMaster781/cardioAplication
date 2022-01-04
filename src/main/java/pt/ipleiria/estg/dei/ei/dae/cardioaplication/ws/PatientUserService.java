@@ -408,7 +408,7 @@ public class PatientUserService {
         return Response.status(Response.Status.OK).entity("Email Removido").build();
     }
 
-    @GET
+    /*@GET
     @Path("/exams/{username}")
     public Response getExams(@PathParam("username") String username) throws MyEntityNotFoundException, MessagingException {
         PatientUser patientUser = patientUserBean.findPatient(username);
@@ -430,5 +430,5 @@ public class PatientUserService {
 
     private List<ExamDTO> toExamsDTOs(List<Exam> exams) {
         return exams.stream().map(this::toExamDTO).collect(Collectors.toList());
-    }
+    }*/
 }
