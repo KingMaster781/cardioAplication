@@ -5,6 +5,8 @@ import pt.ipleiria.estg.dei.ei.dae.cardioaplication.dtos.EmailDTO;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.AdminBean;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.ejbs.EmailBean;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.Admin;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.MessageUser;
+import pt.ipleiria.estg.dei.ei.dae.cardioaplication.entities.PatientUser;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.cardioaplication.exceptions.MyEntityNotFoundException;
@@ -17,7 +19,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,6 +51,20 @@ public class AdminService {
 
     private List<AdminDTO> toDTOs(List<Admin> admins){
         return admins.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    private EmailDTO emailtoDTO(MessageUser messageUser){
+        return new EmailDTO(
+                messageUser.getCode(),
+                messageUser.getUserTo(),
+                messageUser.getUserFrom(),
+                messageUser.getSubject(),
+                messageUser.getMessage()
+        );
+    }
+
+    private List<EmailDTO> emailDTOS(List<MessageUser> messageUserList){
+        return messageUserList.stream().map(this::emailtoDTO).collect(Collectors.toList());
     }
 
     @GET
@@ -96,18 +111,6 @@ public class AdminService {
         if(admin==null)
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         return Response.status(Response.Status.OK).entity(toDTO(admin)).build();
-    }
-
-    @POST
-    @Path("/{username}/email/send")
-    @RolesAllowed({"Admin"})
-    public Response sendEmail(@PathParam("username") String username, EmailDTO email) throws MyEntityNotFoundException, MessagingException {
-        Admin admin = adminBean.findAdmin(username);
-        if (admin == null) {
-            throw new MyEntityNotFoundException("Um admin com o username '" + username + "' não foi encontrado nos registos.");
-        }
-        emailBean.send(admin.getEmail(), email.getSubject(), email.getMessage());
-        return Response.status(Response.Status.OK).entity("Email Enviado").build();
     }
 
 }

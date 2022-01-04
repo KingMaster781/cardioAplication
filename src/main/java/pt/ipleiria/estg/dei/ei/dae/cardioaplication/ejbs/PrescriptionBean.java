@@ -31,26 +31,28 @@ public class PrescriptionBean {
         ZoneId defaultZoneId = ZoneId.systemDefault();
 
          for(Prescription prescription : prescriptions)
-        {
-            int duration = prescription.getDuracao();
-            Date insertionDate = prescription.getInsertionDate();
-            Instant instant = insertionDate.toInstant();
+         {
+             if (prescription.isVigor())
+             {
+                 int duration = prescription.getDuracao();
+                 Date insertionDate = prescription.getInsertionDate();
+                 Instant instant = insertionDate.toInstant();
 
-            LocalDate insertionDateLocal = instant.atZone(defaultZoneId).toLocalDate();
+                 LocalDate insertionDateLocal = instant.atZone(defaultZoneId).toLocalDate();
 
-            long daysdiff = Duration.between(localTodayDate.atStartOfDay(), insertionDateLocal.atStartOfDay()).toDays();
-
-            if (-(daysdiff)>=duration)
-            {
-                prescription.setVigor(false);
-            }
-            else
-            {
-                int durationToday = duration + (int) daysdiff;
-                insertionDate=Date.from(localTodayDate.atStartOfDay(defaultZoneId).toInstant());
-                prescription.setDuracao(durationToday);
-                prescription.setInsertionDate(insertionDate);
-            }
+                 long daysdiff = Duration.between(localTodayDate.atStartOfDay(), insertionDateLocal.atStartOfDay()).toDays();;
+                 if (-(daysdiff) >= duration)
+                 {
+                     prescription.setVigor(false);
+                 }
+                 else
+                 {
+                         int durationToday = duration + (int) daysdiff;
+                         insertionDate = Date.from(localTodayDate.atStartOfDay(defaultZoneId).toInstant());
+                         prescription.setDuracao(durationToday);
+                         prescription.setInsertionDate(insertionDate);
+                 }
+             }
         }
     }
 }
