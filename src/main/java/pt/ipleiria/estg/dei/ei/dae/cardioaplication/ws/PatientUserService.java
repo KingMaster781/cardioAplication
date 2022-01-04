@@ -407,4 +407,28 @@ public class PatientUserService {
         emailBean.removeMessage(code);
         return Response.status(Response.Status.OK).entity("Email Removido").build();
     }
+
+    @GET
+    @Path("/exams/{username}")
+    public Response getExams(@PathParam("username") String username) throws MyEntityNotFoundException, MessagingException {
+        PatientUser patientUser = patientUserBean.findPatient(username);
+        if (patientUser == null) {
+            throw new MyEntityNotFoundException("Um paciente com o username '" + username + "' não foi encontrado nos registos.");
+        }
+        List<ExamDTO> examsDTO = toExamsDTOs(patientUser.getExamList());
+        return Response.ok(examsDTO).build();
+    }
+
+    private ExamDTO toExamDTO(Exam exam) {
+        return new ExamDTO(
+                exam.getCode(),
+                convertDatetoString(exam.getDate()),
+                convertDatetoString(exam.getDateResult()),
+                exam.getPatientUser().getUsername()
+        );
+    }
+
+    private List<ExamDTO> toExamsDTOs(List<Exam> exams) {
+        return exams.stream().map(this::toExamDTO).collect(Collectors.toList());
+    }
 }

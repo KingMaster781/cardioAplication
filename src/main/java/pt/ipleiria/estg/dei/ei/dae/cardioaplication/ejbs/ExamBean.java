@@ -38,7 +38,10 @@ public class ExamBean {
         try
         {
             Date date = convertStringtoDate(dateString);
-            Date dateResult = convertStringtoDate(dateResultString);
+            Date dateResult = null;
+            if(dateResultString != null){
+                dateResult = convertStringtoDate(dateResultString);
+            }
             Exam exam = new Exam(code, date, dateResult, patientUser);
             eM.persist(exam);
             patientUser.addExam(exam);

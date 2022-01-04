@@ -18,7 +18,6 @@ public class Exam {
     private int code;
     @NotNull
     private Date date;
-    @NotNull
     private Date dateResult;
     private boolean isDone;
     @ManyToOne
