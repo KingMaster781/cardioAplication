@@ -162,7 +162,7 @@ public class ProfHealthcareService {
 
     @GET
     @Path("/{username}")
-    @RolesAllowed({"Admin"})
+    @RolesAllowed({"Admin", "ProfHealthcare"})
     public Response consult (@PathParam("username") String username)
     {
         ProfHealthcare profHealthcare = profHealthcareBean.findProfHeathcare(username);
