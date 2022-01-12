@@ -53,7 +53,7 @@ public class ExamBean {
     }
 
     public List<Exam> getAllPatientExams(String patientUser_username){
-        return eM.createNamedQuery("getAllPatientExam", Exam.class).setParameter("username", patientUser_username).getResultList();
+        return (List<Exam>) eM.createNamedQuery("getAllPatientExam").setParameter("username", patientUser_username).getResultList();
     }
 
     public void update(int code, Date dateResult, boolean isDone) throws MyEntityNotFoundException, MyConstraintViolationException {

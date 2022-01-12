@@ -66,17 +66,18 @@ public class ExamService {
     }
 
     @GET
-    @Path("{code}")
+    @Path("/{code}")
     public Response getExam(@PathParam("code") int code) {
-        Exam exam = examBean.findExam(code);
+        /*Exam exam = examBean.findExam(code);
         if (exam != null)
-            return Response.ok(toDTO(exam)).build();
-        return Response.status(Response.Status.NOT_FOUND).entity("ERROR_FINDING_EXAM").build();
+            return Response.ok(toDTO(exam)).build();*/
+        return Response.ok("Sucesso").build();
+        //return Response.status(Response.Status.NOT_FOUND).entity("ERROR_FINDING_EXAM").build();
     }
 
     @GET
-    @Path("/user/{username}")
-    public Response getUserExams(@PathParam("username") String  username) {
+    @Path("/user/{username}/list")
+    public Response getUserExams(@PathParam("username") String username) {
         List<Exam> exam = examBean.getAllPatientExams(username);
         if (exam != null)
             return Response.ok(toDTOs(exam)).build();
